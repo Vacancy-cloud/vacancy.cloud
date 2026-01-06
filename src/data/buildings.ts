@@ -197,6 +197,7 @@ export const buildings: Building[] = [
     name: 'J.B. Winsløws Vej 9A',
     address: 'J.B. Winsløws Vej 9A, 5000 Odense C',
     coordinates: [10.3904, 55.4038], // [lng, lat] for Mapbox - Odense C
+    image: '/images/Winsløws Vej 9A/25052023-455.jpg',
     type: 'Yderst præsentabel erhvervsejendom. Kan anvendes til kontorerhverv. Er en bevaringsværdig bygning i høj arkitektonisk kvalitet.',
     price: '75.000.000 Kr. (Til salg)',
     size: {
@@ -285,6 +286,7 @@ export const buildings: Building[] = [
     ],
     isochroneGeoJSON: generateSampleIsochrone([10.3904, 55.4038], 0.8), // 10-min walking isochrone
     galleryImages: [
+      '/images/Winsløws Vej 9A/25052023-455.jpg',
       '/images/Winsløws Vej 9A/DJI-20250307160139-0268-D.jpg',
       '/images/Winsløws Vej 9A/DSC04767.jpg',
       '/images/Winsløws Vej 9A/DSC06639.jpg',
