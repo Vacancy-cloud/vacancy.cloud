@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { smoothScrollTo } from '../utils/smoothScroll';
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [logoError, setLogoError] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
+    // Only track scroll on homepage
+    if (!isHomePage) return;
+
     const handleScroll = () => {
       const sections = ['hero', 'how-it-works', 'demo', 'technology', 'team', 'contact'];
       const scrollPosition = window.scrollY + 100;
@@ -25,11 +32,22 @@ const Navigation = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHomePage]);
 
   const handleNavClick = (sectionId: string) => {
-    smoothScrollTo(sectionId);
     setIsMenuOpen(false);
+    
+    if (isHomePage) {
+      // On homepage, just scroll to section
+      smoothScrollTo(sectionId);
+    } else {
+      // On BuildingDetail page, navigate to homepage with hash, then scroll
+      navigate(`/#${sectionId}`, { replace: false });
+      // Use setTimeout to ensure navigation completes before scrolling
+      setTimeout(() => {
+        smoothScrollTo(sectionId);
+      }, 100);
+    }
   };
 
   const navLinks = [
@@ -46,9 +64,15 @@ const Navigation = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0">
             <button
-              onClick={() => handleNavClick('hero')}
+              onClick={() => {
+                if (isHomePage) {
+                  handleNavClick('hero');
+                } else {
+                  navigate('/');
+                }
+              }}
               className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
-              aria-label="Go to top"
+              aria-label="Go to homepage"
             >
               {!logoError && (
                 <img
