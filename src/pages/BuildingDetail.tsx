@@ -320,6 +320,7 @@ const BuildingDetail = () => {
               <div className="pt-6 border-t border-gray-200">
                 <h3 className="text-lg font-semibold text-text-dark mb-3">Description</h3>
                 <p className="text-text-muted leading-relaxed">{building.description}</p>
+                <p className="text-xs text-gray-400 mt-3">Information provided by Freja Ejendomme</p>
               </div>
             </div>
           </div>

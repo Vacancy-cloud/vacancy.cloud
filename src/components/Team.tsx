@@ -6,9 +6,9 @@ const Team = () => {
   const founders = [
     {
       name: 'Iaroslava Komissarova',
-      role: 'Founder',
+      role: 'Co-founder',
       title: 'Architect • Independent researcher • Cand. Arch MAA',
-      bio: 'Founder @ Vacancy.Cloud • Independent researcher • Cand. Arch MAA',
+      bio: 'Co-founder @ Vacancy.Cloud • Independent researcher • Cand. Arch MAA',
       photo: '/images/founders/Yasya.jpg',
       initials: 'IK',
     },
