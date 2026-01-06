@@ -284,5 +284,13 @@ export const buildings: Building[] = [
       },
     ],
     isochroneGeoJSON: generateSampleIsochrone([10.3904, 55.4038], 0.8), // 10-min walking isochrone
+    galleryImages: [
+      '/images/Winsløws Vej 9A/DJI-20250307160139-0268-D.jpg',
+      '/images/Winsløws Vej 9A/DSC04767.jpg',
+      '/images/Winsløws Vej 9A/DSC06639.jpg',
+    ],
+    planImages: [
+      '/images/Winsløws Vej 9A/Screenshot 2026-01-07 010256.png',
+    ],
   },
 ];
