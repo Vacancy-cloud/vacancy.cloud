@@ -155,10 +155,59 @@ const BuildingDetail = () => {
   };
 
   /**
+   * Extracts year from building.year string.
+   * Handles formats like "1978", "Ejendommen er fra 1914.", etc.
+   */
+  const getBuildingYear = (): number => {
+    if (!building?.year) {
+      return 2000; // Default fallback
+    }
+
+    // Extract first 4-digit year from the string
+    const yearMatch = building.year.match(/\b(19|20)\d{2}\b/);
+    if (yearMatch) {
+      const parsed = parseInt(yearMatch[0], 10);
+      return (parsed >= 1800 && parsed <= new Date().getFullYear()) ? parsed : 2000;
+    }
+
+    return 2000; // Default fallback if no valid year found
+  };
+
+  /**
+   * Extracts material type from building.material string.
+   * Maps Danish material descriptions to standard material types.
+   */
+  const getMaterialType = (): string => {
+    if (!building?.material) {
+      return 'Default';
+    }
+
+    const materialLower = building.material.toLowerCase();
+    
+    // Check for material keywords
+    if (materialLower.includes('beton') || materialLower.includes('concrete')) {
+      return 'Beton';
+    }
+    if (materialLower.includes('sten') || materialLower.includes('brick') || materialLower.includes('mursten')) {
+      return 'Brick';
+    }
+    if (materialLower.includes('træ') || materialLower.includes('wood') || materialLower.includes('bindingsværk')) {
+      return 'Wood';
+    }
+    if (materialLower.includes('stål') || materialLower.includes('steel')) {
+      return 'Steel';
+    }
+
+    return 'Default';
+  };
+
+  /**
    * Calculates CO2 impact for the three scenarios.
    * Returns a default CarbonAnalysis object if area is invalid or 0.
    */
   const buildingArea = getBuildingArea();
+  const buildingYear = getBuildingYear();
+  const materialType = getMaterialType();
   
   // Default values when area is 0 or invalid
   const defaultCarbonAnalysis: CarbonAnalysis = {
@@ -172,7 +221,7 @@ const BuildingDetail = () => {
   let carbonAnalysis: CarbonAnalysis;
   try {
     carbonAnalysis = buildingArea > 0 
-      ? calculateCarbonImpact(buildingArea) 
+      ? calculateCarbonImpact(buildingArea, materialType, buildingYear) 
       : defaultCarbonAnalysis;
   } catch (error) {
     // Fallback to default if calculation fails (shouldn't happen with our validation)
