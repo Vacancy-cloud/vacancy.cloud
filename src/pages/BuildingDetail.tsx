@@ -7,6 +7,7 @@ import { buildings } from '../data/buildings';
 import { Building } from '../types';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import { calculateCarbonImpact } from '../utils/co2-calculator';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const BuildingDetail = () => {
@@ -108,6 +109,32 @@ const BuildingDetail = () => {
   const utilityConnections = ['Electricity', 'Water', 'Sewage', 'Heating'];
   const zoning = 'C-2 (Commercial)';
   
+  // Extract building area for CO2 calculation
+  // Priority: floorArea > commercialArea > builtArea > groundArea
+  const getBuildingArea = (): number => {
+    if (!building.size) return 0;
+    const areaStr = building.size.floorArea || 
+                    building.size.commercialArea || 
+                    building.size.builtArea || 
+                    building.size.groundArea;
+    if (!areaStr) return 0;
+    // Extract number from string like "6.785 m²" or "1.376 m²"
+    // Handle both period (.) and comma (,) as decimal separators
+    const match = areaStr.match(/[\d.,]+/);
+    if (!match) return 0;
+    const numberStr = match[0];
+    // Replace comma with period for parseFloat, or use as-is if period is decimal
+    // Danish format: "6.785" means 6.785 (period as decimal)
+    // If comma exists, it's likely thousands separator, so remove it
+    const normalized = numberStr.includes(',') && !numberStr.includes('.') 
+      ? numberStr.replace(/,/g, '.')  // Comma as decimal separator
+      : numberStr.replace(/,/g, '');    // Comma as thousands separator, remove it
+    return parseFloat(normalized) || 0;
+  };
+
+  // Calculate CO2 impact for the three scenarios
+  const buildingArea = getBuildingArea();
+  const carbonAnalysis = buildingArea > 0 ? calculateCarbonImpact(buildingArea) : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -624,6 +651,82 @@ const BuildingDetail = () => {
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* CO₂ Impact Scenarios - Conservation, Renovation, Demolition */}
+          {carbonAnalysis && (
+            <div className="mt-8">
+              <div className="bg-white rounded-card p-6 shadow-md">
+                <h2 className="text-2xl font-bold text-text-dark mb-6">CO₂ Impact Scenarios</h2>
+                <p className="text-text-muted mb-6">
+                  Carbon footprint analysis based on Danish Building Regulation (BR18) & LCAbyg standards, calculated over a 50-year period.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Conservation Card */}
+                  <div className="border-2 border-green-200 rounded-lg p-6 bg-green-50/50">
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                        <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-text-dark">Conservation</h3>
+                    </div>
+                    <p className="text-sm text-text-muted mb-4">
+                      Maintain existing building with current operational emissions
+                    </p>
+                    <div className="pt-4 border-t border-green-200">
+                      <span className="text-xs text-text-muted uppercase tracking-wide">CO₂ Impact</span>
+                      <p className="text-2xl font-bold text-green-600 mt-2">
+                        {carbonAnalysis.conservation.toFixed(1)} kg CO₂e/m²/y
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Renovation Card */}
+                  <div className="border-2 border-blue-200 rounded-lg p-6 bg-blue-50/50">
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                        <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-text-dark">Renovation</h3>
+                    </div>
+                    <p className="text-sm text-text-muted mb-4">
+                      Modernize building with energy-efficient upgrades
+                    </p>
+                    <div className="pt-4 border-t border-blue-200">
+                      <span className="text-xs text-text-muted uppercase tracking-wide">CO₂ Impact</span>
+                      <p className="text-2xl font-bold text-blue-600 mt-2">
+                        {carbonAnalysis.renovation.toFixed(1)} kg CO₂e/m²/y
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Demolition Card */}
+                  <div className="border-2 border-red-200 rounded-lg p-6 bg-red-50/50">
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                        <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </div>
+                      <h3 className="text-xl font-bold text-text-dark">Demolition</h3>
+                    </div>
+                    <p className="text-sm text-text-muted mb-4">
+                      Demolish and rebuild to new building standards
+                    </p>
+                    <div className="pt-4 border-t border-red-200">
+                      <span className="text-xs text-text-muted uppercase tracking-wide">CO₂ Impact</span>
+                      <p className="text-2xl font-bold text-red-600 mt-2">
+                        {carbonAnalysis.demolition.toFixed(1)} kg CO₂e/m²/y
+                      </p>
                     </div>
                   </div>
                 </div>
