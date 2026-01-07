@@ -69,6 +69,7 @@ export interface Building {
   };
   floors: string;
   material: string;
+  materialCategory?: string; // Material category for CO2 calculations (e.g., 'mursten', 'Betonkonstruktion', 'Trækonstruktion', 'Steel')
   owner: string;
   year: string;
   description: string;

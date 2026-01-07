@@ -174,10 +174,16 @@ const BuildingDetail = () => {
   };
 
   /**
-   * Extracts material type from building.material string.
-   * Maps Danish material descriptions to standard material types.
+   * Gets material category for CO2 calculations.
+   * Uses materialCategory if available, otherwise falls back to parsing material string.
    */
   const getMaterialType = (): string => {
+    // Use materialCategory if explicitly set
+    if (building?.materialCategory) {
+      return building.materialCategory;
+    }
+
+    // Fallback: parse from material string
     if (!building?.material) {
       return 'Default';
     }
@@ -186,13 +192,13 @@ const BuildingDetail = () => {
     
     // Check for material keywords
     if (materialLower.includes('beton') || materialLower.includes('concrete')) {
-      return 'Beton';
+      return 'Betonkonstruktion';
     }
     if (materialLower.includes('sten') || materialLower.includes('brick') || materialLower.includes('mursten')) {
-      return 'Brick';
+      return 'mursten';
     }
     if (materialLower.includes('træ') || materialLower.includes('wood') || materialLower.includes('bindingsværk')) {
-      return 'Wood';
+      return 'Trækonstruktion';
     }
     if (materialLower.includes('stål') || materialLower.includes('steel')) {
       return 'Steel';
@@ -220,10 +226,10 @@ const BuildingDetail = () => {
     let summary = '';
     
     if (highestScenario === 'demolition') {
-      const materialImpact = material === 'Beton' ? 'high-carbon concrete' : 
-                            material === 'Steel' ? 'steel' :
-                            material === 'Brick' ? 'brick' :
-                            material === 'Wood' ? 'wood' : 'the building materials';
+      const materialImpact = material === 'Beton' || material === 'Betonkonstruktion' ? 'høj-kulstof betonkonstruktion' : 
+                            material === 'Steel' ? 'stål' :
+                            material === 'Brick' || material === 'mursten' ? 'mursten' :
+                            material === 'Wood' || material === 'Trækonstruktion' ? 'trækonstruktion' : 'bygningsmaterialerne';
       const ageNote = year < 1975 
         ? ` Additionally, buildings constructed before 1975 (this building is from ${year}) face a 15% age penalty due to potential hazardous materials requiring specialized disposal.`
         : '';
@@ -420,6 +426,11 @@ const BuildingDetail = () => {
                   <div>
                     <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Material</p>
                     <p className="text-lg font-semibold text-text-dark">{building.material}</p>
+                    {building.materialCategory && (
+                      <p className="text-sm text-text-muted mt-1">
+                        Category: <span className="font-semibold text-primary">{building.materialCategory}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-start">

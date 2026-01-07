@@ -16,8 +16,11 @@ export const DANISH_LCA_STANDARDS = {
   // Define standard emission factors based on Danish LCA data
   const MATERIAL_FACTORS: Record<string, number> = {
     'Beton': 1.3,
-    'Brick': 1.0,
-    'Wood': 0.7,
+    'Betonkonstruktion': 1.3,
+    'mursten': 1.0,
+    'Brick': 1.0, // Keep for backward compatibility
+    'Trækonstruktion': 0.7,
+    'Wood': 0.7, // Keep for backward compatibility
     'Steel': 1.5, // Added steel as it's common in commercial buildings
     'Default': 1.0
   };
@@ -25,7 +28,7 @@ export const DANISH_LCA_STANDARDS = {
   /**
    * Main calculation engine for the three scenarios.
    * @param areaM2 - Building area in square meters. Must be > 0.
-   * @param material - Building material type (e.g., 'Brick', 'Beton', 'Wood', 'Steel')
+   * @param material - Building material type (e.g., 'mursten', 'Betonkonstruktion', 'Trækonstruktion', 'Steel')
    * @param yearBuilt - Year the building was constructed
    * @returns CarbonAnalysis object with CO2 impact values
    * @throws Error if areaM2 is <= 0
