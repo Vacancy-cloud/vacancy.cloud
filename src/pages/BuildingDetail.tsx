@@ -202,6 +202,45 @@ const BuildingDetail = () => {
   };
 
   /**
+   * Generates AI Strategy Insight based on carbon analysis, material, and year.
+   * Returns an object with summary text and recommendations.
+   */
+  const generateAIStrategyInsight = (
+    analysis: CarbonAnalysis,
+    material: string,
+    year: number
+  ): { summary: string; greenFinanceTip: string } => {
+    const values = [analysis.conservation, analysis.renovation, analysis.demolition];
+    const maxValue = Math.max(...values);
+    const highestScenario = 
+      maxValue === analysis.demolition ? 'demolition' :
+      maxValue === analysis.renovation ? 'renovation' :
+      'conservation';
+
+    let summary = '';
+    
+    if (highestScenario === 'demolition') {
+      const materialImpact = material === 'Beton' ? 'high-carbon concrete' : 
+                            material === 'Steel' ? 'steel' :
+                            material === 'Brick' ? 'brick' :
+                            material === 'Wood' ? 'wood' : 'the building materials';
+      const ageNote = year < 1975 
+        ? ` Additionally, buildings constructed before 1975 (this building is from ${year}) face a 15% age penalty due to potential hazardous materials requiring specialized disposal.`
+        : '';
+      
+      summary = `Demolition and new construction represents the highest carbon impact (${analysis.demolition.toFixed(1)} kg CO₂e/m²/y) among all scenarios. This is primarily due to the embodied carbon in ${materialImpact} materials, which requires significant energy to produce and transport.${ageNote} The upfront carbon cost of new construction outweighs the operational efficiency gains, making renovation or conservation more environmentally responsible options.`;
+    } else if (highestScenario === 'renovation') {
+      summary = `Renovation offers a balanced approach (${analysis.renovation.toFixed(1)} kg CO₂e/m²/y), combining moderate upfront carbon investment with improved operational efficiency. This scenario modernizes the building while preserving existing materials, reducing waste and embodied carbon compared to demolition.`;
+    } else {
+      summary = `Conservation maintains the lowest carbon footprint (${analysis.conservation.toFixed(1)} kg CO₂e/m²/y) by avoiding new construction emissions. While operational emissions remain higher, the zero embodied carbon makes this the most sustainable short-term option, especially for buildings with good structural integrity.`;
+    }
+
+    const greenFinanceTip = 'This project qualifies for sustainable building grants due to its high reuse potential.';
+
+    return { summary, greenFinanceTip };
+  };
+
+  /**
    * Calculates CO2 impact for the three scenarios.
    * Returns a default CarbonAnalysis object if area is invalid or 0.
    */
@@ -829,6 +868,54 @@ const BuildingDetail = () => {
                       <p className="text-2xl font-bold text-red-600 mt-2">
                         {carbonAnalysis.demolition.toFixed(1)} kg CO₂e/m²/y
                       </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* AI Strategy Insight */}
+          {buildingArea > 0 && (
+            <div className="mt-8">
+              <div className="bg-blue-50/30 border border-blue-200/50 rounded-card p-6 shadow-sm">
+                <div className="flex items-start mb-4">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-text-dark mb-2 flex items-center">
+                      AI Strategy Insight
+                      <span className="ml-2 text-sm font-normal text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                        AI-Powered
+                      </span>
+                    </h2>
+                    <div className="mt-4 space-y-4">
+                      {(() => {
+                        const insight = generateAIStrategyInsight(carbonAnalysis, materialType, buildingYear);
+                        return (
+                          <>
+                            <p className="text-text-dark leading-relaxed">
+                              {insight.summary}
+                            </p>
+                            <div className="bg-white/60 border border-blue-200/50 rounded-lg p-4 mt-4">
+                              <div className="flex items-start">
+                                <svg className="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div>
+                                  <p className="text-sm font-semibold text-text-dark mb-1">Green Finance Tip</p>
+                                  <p className="text-sm text-text-muted">
+                                    {insight.greenFinanceTip}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        );
+                      })()}
                     </div>
                   </div>
                 </div>
