@@ -7,6 +7,7 @@ import { buildings } from '../data/buildings';
 import { Building } from '../types';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import Contact from '../components/Contact';
 import { calculateCarbonImpact, type CarbonAnalysis } from '@/utils/co2-calculator';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -1135,6 +1136,7 @@ const BuildingDetail = () => {
           )}
         </div>
       </main>
+      <Contact building={building} carbonAnalysis={buildingArea > 0 ? carbonAnalysis : null} />
       <Footer />
     </div>
   );

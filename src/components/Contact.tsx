@@ -1,7 +1,13 @@
 import { useState } from 'react';
-import { ContactFormData, FormErrors } from '../types';
+import { ContactFormData, FormErrors, Building } from '../types';
+import { CarbonAnalysis } from '../utils/co2-calculator';
 
-const Contact = () => {
+interface ContactProps {
+  building?: Building | null;
+  carbonAnalysis?: CarbonAnalysis | null;
+}
+
+const Contact = ({ building = null, carbonAnalysis = null }: ContactProps = {}) => {
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
@@ -11,6 +17,7 @@ const Contact = () => {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -33,24 +40,75 @@ const Contact = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (validateForm()) {
-      console.log('Form submitted:', formData);
-      setIsSubmitted(true);
-      setFormData({
-        name: '',
-        email: '',
-        organization: '',
-        message: '',
-      });
-      setErrors({});
+    if (!validateForm()) {
+      return;
+    }
 
-      // Reset success message after 5 seconds
-      setTimeout(() => {
-        setIsSubmitted(false);
-      }, 5000);
+    setIsSubmitting(true);
+
+    try {
+      // Prepare submission data
+      const submissionData: Record<string, string> = {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      };
+
+      // Add organization if provided
+      if (formData.organization) {
+        submissionData.organization = formData.organization;
+      }
+
+      // Add building data if available
+      if (building) {
+        submissionData.buildingName = building.name;
+        submissionData.buildingMaterial = building.material;
+        submissionData.buildingYear = building.year;
+        
+        // Add carbon analysis if available
+        if (carbonAnalysis) {
+          submissionData.carbonRenovation = `${carbonAnalysis.renovation.toFixed(1)} kg CO₂e/m²/y`;
+          submissionData.carbonDemolition = `${carbonAnalysis.demolition.toFixed(1)} kg CO₂e/m²/y`;
+          submissionData.carbonConservation = `${carbonAnalysis.conservation.toFixed(1)} kg CO₂e/m²/y`;
+        }
+      }
+
+      // Submit to Formspree
+      const response = await fetch('https://formspree.io/f/xlgdqngg', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
+      });
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        setFormData({
+          name: '',
+          email: '',
+          organization: '',
+          message: '',
+        });
+        setErrors({});
+
+        // Reset success message after 5 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+        }, 5000);
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      // Show error message to user
+      setErrors({ message: 'Failed to send message. Please try again later.' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -91,7 +149,7 @@ const Contact = () => {
               />
             </svg>
             <h3 className="text-2xl font-bold text-text-dark mb-2">Thank you!</h3>
-            <p className="text-text-muted">We'll be in touch soon.</p>
+            <p className="text-text-muted">We have received your request.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -185,9 +243,10 @@ const Contact = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full px-8 py-4 bg-accent text-white rounded-lg font-semibold text-lg hover:bg-accent/90 transition-all transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+              disabled={isSubmitting}
+              className="w-full px-8 py-4 bg-accent text-white rounded-lg font-semibold text-lg hover:bg-accent/90 transition-all transform hover:scale-[1.02] shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Send Message
+              {isSubmitting ? 'Sending...' : 'Send Message'}
             </button>
           </form>
         )}
