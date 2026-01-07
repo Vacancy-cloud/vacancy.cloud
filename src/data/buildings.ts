@@ -193,6 +193,20 @@ export const buildings: Building[] = [
       },
     ],
     isochroneGeoJSON: generateSampleIsochrone([11.7548, 55.2435], 0.8), // 10-min walking isochrone
+    galleryImages: [
+      '/images/Tolbyen/15052025-375.jpg',
+      '/images/Tolbyen/DJI-20250811094258-0001-D.jpg',
+      '/images/Tolbyen/DSC08151.jpg',
+      '/images/Tolbyen/DSC08158.jpg',
+      '/images/Tolbyen/DSC08213.jpg',
+    ],
+    planImages: [
+      '/images/Tolbyen/1.png',
+      '/images/Tolbyen/2.png',
+      '/images/Tolbyen/3.png',
+      '/images/Tolbyen/4.png',
+      '/images/Tolbyen/5.png',
+    ],
   },
   {
     id: '3',
