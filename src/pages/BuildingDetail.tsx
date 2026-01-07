@@ -7,7 +7,7 @@ import { buildings } from '../data/buildings';
 import { Building } from '../types';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
-import { calculateCarbonImpact } from '../utils/co2-calculator';
+import { calculateCarbonImpact, type CarbonAnalysis } from '@/utils/co2-calculator';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const BuildingDetail = () => {
@@ -109,32 +109,76 @@ const BuildingDetail = () => {
   const utilityConnections = ['Electricity', 'Water', 'Sewage', 'Heating'];
   const zoning = 'C-2 (Commercial)';
   
-  // Extract building area for CO2 calculation
-  // Priority: floorArea > commercialArea > builtArea > groundArea
+  /**
+   * Extracts building area from size property for CO2 calculation.
+   * Priority: floorArea > commercialArea > builtArea > groundArea
+   * Returns 0 if no valid area is found.
+   */
   const getBuildingArea = (): number => {
-    if (!building.size) return 0;
-    const areaStr = building.size.floorArea || 
-                    building.size.commercialArea || 
-                    building.size.builtArea || 
-                    building.size.groundArea;
-    if (!areaStr) return 0;
-    // Extract number from string like "6.785 m²" or "1.376 m²"
-    // Handle both period (.) and comma (,) as decimal separators
-    const match = areaStr.match(/[\d.,]+/);
-    if (!match) return 0;
-    const numberStr = match[0];
-    // Replace comma with period for parseFloat, or use as-is if period is decimal
-    // Danish format: "6.785" means 6.785 (period as decimal)
-    // If comma exists, it's likely thousands separator, so remove it
-    const normalized = numberStr.includes(',') && !numberStr.includes('.') 
-      ? numberStr.replace(/,/g, '.')  // Comma as decimal separator
-      : numberStr.replace(/,/g, '');    // Comma as thousands separator, remove it
-    return parseFloat(normalized) || 0;
+    // Type-safe check: ensure building.size exists
+    if (!building?.size) {
+      return 0;
+    }
+
+    const { size } = building;
+    
+    // Type-safe extraction with fallback chain
+    const areaStr: string | undefined = 
+      size.floorArea ?? 
+      size.commercialArea ?? 
+      size.builtArea ?? 
+      size.groundArea;
+    
+    // Return 0 if no area string is found
+    if (!areaStr || typeof areaStr !== 'string' || areaStr.trim() === '') {
+      return 0;
+    }
+
+    // Remove all non-numeric characters except dots and commas
+    const cleaned = areaStr.replace(/[^0-9.,]/g, '');
+    
+    if (!cleaned) {
+      return 0;
+    }
+    
+    // Danish logic: if it's "6.785", it's usually 6785 sqm. 
+    // If it's "6,785", it's also usually 6785 or 6.785 depending on context.
+    // Standardizing: remove the dot if it acts as a thousands separator.
+    const normalized = cleaned.includes('.') && cleaned.length > 4 
+      ? cleaned.replace(/\./g, '') 
+      : cleaned.replace(/,/g, '.');
+
+    const parsed = parseFloat(normalized);
+    
+    // Return 0 for invalid, NaN, or negative values
+    return (isFinite(parsed) && parsed > 0) ? parsed : 0;
   };
 
-  // Calculate CO2 impact for the three scenarios
+  /**
+   * Calculates CO2 impact for the three scenarios.
+   * Returns a default CarbonAnalysis object if area is invalid or 0.
+   */
   const buildingArea = getBuildingArea();
-  const carbonAnalysis = buildingArea > 0 ? calculateCarbonImpact(buildingArea) : null;
+  
+  // Default values when area is 0 or invalid
+  const defaultCarbonAnalysis: CarbonAnalysis = {
+    conservation: 0,
+    renovation: 0,
+    demolition: 0,
+  };
+
+  // Calculate CO2 impact only if we have a valid area > 0
+  // Use try-catch for additional safety, though getBuildingArea should prevent invalid values
+  let carbonAnalysis: CarbonAnalysis;
+  try {
+    carbonAnalysis = buildingArea > 0 
+      ? calculateCarbonImpact(buildingArea) 
+      : defaultCarbonAnalysis;
+  } catch (error) {
+    // Fallback to default if calculation fails (shouldn't happen with our validation)
+    console.warn('Failed to calculate carbon impact:', error);
+    carbonAnalysis = defaultCarbonAnalysis;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -659,7 +703,7 @@ const BuildingDetail = () => {
           )}
 
           {/* CO₂ Impact Scenarios - Conservation, Renovation, Demolition */}
-          {carbonAnalysis && (
+          {buildingArea > 0 && (
             <div className="mt-8">
               <div className="bg-white rounded-card p-6 shadow-md">
                 <h2 className="text-2xl font-bold text-text-dark mb-6">CO₂ Impact Scenarios</h2>
