@@ -10,7 +10,7 @@ import { calculateCarbonImpact, type CarbonAnalysis } from '@/utils/co2-calculat
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Set Mapbox access token
-mapboxgl.accessToken = '08bc5afc3cff6c89c87a5aa1b71f246b';
+mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
 
 const BuildingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -647,7 +647,7 @@ const BuildingDetail = () => {
             {/* Ortofoto Map */}
             <div className="bg-white rounded-card p-6 shadow-md">
               <h2 className="text-2xl font-bold text-text-dark mb-4">Ortofoto</h2>
-              <div className="bg-gray-200 rounded-lg aspect-[4/3] relative overflow-hidden">
+              <div className="bg-gray-200 rounded-lg aspect-video relative overflow-hidden">
                 <div 
                   ref={ortofotoMapContainer} 
                   className="w-full h-full absolute inset-0"
