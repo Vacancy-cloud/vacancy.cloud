@@ -105,7 +105,11 @@ const BuildingDetail = () => {
 
     ortofotoMap.current = new mapboxgl.Map({
       container: ortofotoMapContainer.current,
-      style: 'mapbox://styles/mapbox/empty-v9',
+      style: {
+        version: 8,
+        sources: {},
+        layers: []
+      },
       center: building.coordinates,
       zoom: 18,
       interactive: false,
@@ -115,13 +119,14 @@ const BuildingDetail = () => {
     ortofotoMap.current.on('load', () => {
       if (!ortofotoMap.current) return;
 
-      // Add Dataforsyningen raster source with Danish Ortofoto tiles
+      // Add Dataforsyningen WMTS raster source with Danish Ortofoto tiles
       ortofotoMap.current.addSource('ortofoto-source', {
         type: 'raster',
         tiles: [
-          `https://api.dataforsyningen.dk/orto_foraar/{z}/{x}/{y}?token=${DATAFORSYNINGEN_TOKEN}`
+          `https://api.dataforsyningen.dk/orto_foraar_webm_DAF/1.0.0/WMTS/orto_foraar_webm/default/DFD_GoogleMapsCompatible/{z}/{y}/{x}.jpg?token=${DATAFORSYNINGEN_TOKEN}`
         ],
         tileSize: 256,
+        scheme: 'xyz',
       });
 
       // Add the raster layer
@@ -639,7 +644,7 @@ const BuildingDetail = () => {
                 />
               </div>
               <p className="text-sm text-text-muted mt-4 text-center">
-                Satellite Imagery
+                Data: SDFI GeoDanmark
               </p>
             </div>
           </div>
