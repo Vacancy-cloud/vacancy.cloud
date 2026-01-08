@@ -114,11 +114,18 @@ const BuildingDetail = () => {
       zoom: 18,
       interactive: false,
       attributionControl: false,
-      transformRequest: (url, _resourceType) => {
-        if (url.includes('dataforsyningen.dk')) {
-          return { url: url }; // Clean request
+      transformRequest: (url) => {
+        if (url.includes('api.dataforsyningen.dk')) {
+          // Регулярное выражение находит /zoom/x/y и меняет их на /zoom/y/x
+          const regex = /\/(\d+)\/(\d+)\/(\d+)\.jpeg/;
+          const match = url.match(regex);
+          if (match) {
+            const [full, z, x, y] = match;
+            const correctedUrl = url.replace(full, `/${z}/${y}/${x}.jpeg`);
+            return { url: correctedUrl };
+          }
         }
-        return { url: url };
+        return { url };
       },
     });
 
@@ -129,7 +136,7 @@ const BuildingDetail = () => {
       ortofotoMap.current.addSource('ortofoto-source', {
         type: 'raster',
         tiles: [
-          `https://api.dataforsyningen.dk/orto_foraar_webm_DAF/1.0.0/WMTS/orto_foraar_webm/default/DFD_GoogleMapsCompatible/{z}/{y}/{x}.jpeg?token=${DATAFORSYNINGEN_TOKEN}`
+          `https://api.dataforsyningen.dk/orto_foraar_webm_DAF/1.0.0/WMTS/orto_foraar_webm/default/DFD_GoogleMapsCompatible/{z}/{x}/{y}.jpeg?token=${DATAFORSYNINGEN_TOKEN}`
         ],
         tileSize: 256,
         scheme: 'xyz',
