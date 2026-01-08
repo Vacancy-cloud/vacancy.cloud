@@ -123,7 +123,7 @@ const BuildingDetail = () => {
       ortofotoMap.current.addSource('ortofoto-source', {
         type: 'raster',
         tiles: [
-          `https://api.dataforsyningen.dk/orto_foraar_webm_DAF/1.0.0/WMTS/orto_foraar_webm/default/DFD_GoogleMapsCompatible/{z}/{y}/{x}.jpg?token=${DATAFORSYNINGEN_TOKEN}`
+          `https://api.dataforsyningen.dk/orto_foraar_webm_DAF/1.0.0/WMTS/orto_foraar_webm/default/DFD_GoogleMapsCompatible/{z}/{y}/{x}.jpeg?token=${DATAFORSYNINGEN_TOKEN}`
         ],
         tileSize: 256,
         scheme: 'xyz',
@@ -138,7 +138,8 @@ const BuildingDetail = () => {
     });
 
     // Handle errors gracefully
-    ortofotoMap.current.on('error', () => {
+    ortofotoMap.current.on('error', (e) => {
+      console.log('Mapbox Error:', e);
       // Error handling is handled by the bg-gray-100 background
     });
 
