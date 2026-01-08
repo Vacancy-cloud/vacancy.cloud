@@ -9,6 +9,9 @@ import Contact from '../components/Contact';
 import { calculateCarbonImpact, type CarbonAnalysis } from '@/utils/co2-calculator';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+// Set Mapbox access token
+mapboxgl.accessToken = '08bc5afc3cff6c89c87a5aa1b71f246b';
+
 const BuildingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -35,8 +38,6 @@ const BuildingDetail = () => {
   // Initialize Mapbox map
   useEffect(() => {
     if (!building || !mapContainer.current || map.current) return;
-
-    mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -98,11 +99,6 @@ const BuildingDetail = () => {
   // Initialize Ortofoto map
   useEffect(() => {
     if (!building || !ortofotoMapContainer.current || ortofotoMap.current) return;
-
-    // Ensure access token is set
-    if (!mapboxgl.accessToken) {
-      mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
-    }
 
     // Ensure container has height
     if (ortofotoMapContainer.current) {
