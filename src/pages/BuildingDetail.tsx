@@ -12,6 +12,9 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 // Set Mapbox access token
 mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
 
+// Dataforsyningen API token
+const DATAFORSYNINGEN_TOKEN = '08bc5afc3cff6c89c87a5aa1b71f246b';
+
 const BuildingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -112,11 +115,11 @@ const BuildingDetail = () => {
     ortofotoMap.current.on('load', () => {
       if (!ortofotoMap.current) return;
 
-      // Add WMTS raster source with Danish Ortofoto tiles
-      ortofotoMap.current.addSource('ortofoto-wmts', {
+      // Add Dataforsyningen raster source with Danish Ortofoto tiles
+      ortofotoMap.current.addSource('ortofoto-source', {
         type: 'raster',
         tiles: [
-          'https://services.datafordeler.dk/GeoDanmarkOrto/orto_foraar_webm/1.0.0/WMTS/orto_foraar_webm/default/DFD_GoogleMapsCompatible/{z}/{y}/{x}.jpg?username=Vacancy&password=Asdf190599'
+          `https://api.dataforsyningen.dk/orto_foraar/{z}/{x}/{y}?token=${DATAFORSYNINGEN_TOKEN}`
         ],
         tileSize: 256,
       });
@@ -125,7 +128,7 @@ const BuildingDetail = () => {
       ortofotoMap.current.addLayer({
         id: 'ortofoto-layer',
         type: 'raster',
-        source: 'ortofoto-wmts',
+        source: 'ortofoto-source',
       });
     });
 
