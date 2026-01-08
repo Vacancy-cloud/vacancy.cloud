@@ -100,55 +100,39 @@ const BuildingDetail = () => {
   useEffect(() => {
     if (!building || !ortofotoMapContainer.current || ortofotoMap.current) return;
 
-    // Ensure container has height
-    if (ortofotoMapContainer.current) {
-      const container = ortofotoMapContainer.current;
-      if (!container.style.height || container.style.height === '0px') {
-        container.style.height = '100%';
-      }
-    }
-
+    // Initialize with a completely empty style to avoid conflicts
     ortofotoMap.current = new mapboxgl.Map({
       container: ortofotoMapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
+      style: {
+        version: 8,
+        sources: {},
+        layers: []
+      },
       center: building.coordinates,
-      zoom: 18,
+      zoom: 17.5, // Немного отдалим для лучшего охвата территории
       interactive: false,
       attributionControl: false,
     });
 
-    // Disable all interactions (redundant with interactive: false, but explicit)
-    ortofotoMap.current.dragPan.disable();
-    ortofotoMap.current.scrollZoom.disable();
-    ortofotoMap.current.boxZoom.disable();
-    ortofotoMap.current.doubleClickZoom.disable();
-
-    // Add Ortofoto layer and hide UI elements when map loads
     ortofotoMap.current.on('load', () => {
-      if (!ortofotoMap.current || !ortofotoMapContainer.current) return;
+      if (!ortofotoMap.current) return;
 
-      // Hide Mapbox logo
-      const logo = ortofotoMapContainer.current.querySelector('.mapboxgl-ctrl-logo');
-      if (logo) {
-        (logo as HTMLElement).style.display = 'none';
-      }
-
-      // Add the raster source
-      ortofotoMap.current.addSource('ortofoto', {
+      // Добавляем официальный источник данных Дании
+      ortofotoMap.current.addSource('ortofoto-source', {
         type: 'raster',
         tiles: [
-          'https://services.dataforsyningen.dk/orto_foraar?service=WMS&version=1.1.1&request=GetMap&layers=orto_foraar&styles=&format=image/png&transparent=false&srs=EPSG:3857&bbox={bbox-epsg-3857}&width=256&height=256&token=08bc5afc3cff6c89c87a5aa1b71f246b'
+          `https://services.dataforsyningen.dk/orto_foraar?service=WMS&version=1.1.1&request=GetMap&layers=orto_foraar&styles=&format=image/png&transparent=false&srs=EPSG:3857&bbox={bbox-epsg-3857}&width=512&height=512&token=08bc5afc3cff6c89c87a5aa1b71f246b`
         ],
-        tileSize: 256,
+        tileSize: 512, // Датские сервера отдают более четкую картинку в 512px
       });
 
-      // Add the raster layer
       ortofotoMap.current.addLayer({
         id: 'ortofoto-layer',
         type: 'raster',
-        source: 'ortofoto',
-        minzoom: 0,
-        maxzoom: 22,
+        source: 'ortofoto-source',
+        paint: {
+          'raster-fade-duration': 0 // Мгновенное появление без размытия
+        }
       });
     });
 
