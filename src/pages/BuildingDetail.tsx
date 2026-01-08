@@ -100,40 +100,13 @@ const BuildingDetail = () => {
   useEffect(() => {
     if (!building || !ortofotoMapContainer.current || ortofotoMap.current) return;
 
-    // Initialize with a completely empty style to avoid conflicts
     ortofotoMap.current = new mapboxgl.Map({
       container: ortofotoMapContainer.current,
-      style: {
-        version: 8,
-        sources: {},
-        layers: []
-      },
+      style: 'mapbox://styles/mapbox/satellite-v9',
       center: building.coordinates,
-      zoom: 17.5, // Немного отдалим для лучшего охвата территории
+      zoom: 18,
       interactive: false,
       attributionControl: false,
-    });
-
-    ortofotoMap.current.on('load', () => {
-      if (!ortofotoMap.current) return;
-
-      // Добавляем официальный источник данных Дании
-      ortofotoMap.current.addSource('ortofoto-source', {
-        type: 'raster',
-        tiles: [
-          `https://services.dataforsyningen.dk/orto_foraar?service=WMS&version=1.1.1&request=GetMap&layers=orto_foraar&styles=&format=image/png&transparent=false&srs=EPSG:3857&bbox={bbox-epsg-3857}&width=512&height=512&token=08bc5afc3cff6c89c87a5aa1b71f246b`
-        ],
-        tileSize: 512, // Датские сервера отдают более четкую картинку в 512px
-      });
-
-      ortofotoMap.current.addLayer({
-        id: 'ortofoto-layer',
-        type: 'raster',
-        source: 'ortofoto-source',
-        paint: {
-          'raster-fade-duration': 0 // Мгновенное появление без размытия
-        }
-      });
     });
 
     return () => {
@@ -638,7 +611,7 @@ const BuildingDetail = () => {
                 />
               </div>
               <p className="text-sm text-text-muted mt-4 text-center">
-                Data: SDFI GeoDanmark
+                Satellite Imagery
               </p>
             </div>
           </div>
