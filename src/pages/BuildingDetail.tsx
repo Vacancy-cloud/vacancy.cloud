@@ -99,7 +99,18 @@ const BuildingDetail = () => {
   useEffect(() => {
     if (!building || !ortofotoMapContainer.current || ortofotoMap.current) return;
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
+    // Ensure access token is set
+    if (!mapboxgl.accessToken) {
+      mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
+    }
+
+    // Ensure container has height
+    if (ortofotoMapContainer.current) {
+      const container = ortofotoMapContainer.current;
+      if (!container.style.height || container.style.height === '0px') {
+        container.style.height = '100%';
+      }
+    }
 
     ortofotoMap.current = new mapboxgl.Map({
       container: ortofotoMapContainer.current,
@@ -130,7 +141,7 @@ const BuildingDetail = () => {
       ortofotoMap.current.addSource('ortofoto', {
         type: 'raster',
         tiles: [
-          'https://services.dataforsyningen.dk/orto_foraar?token=08bc5afc3cff6c89c87a5aa1b71f246b&service=WMS&version=1.1.1&request=GetMap&styles=&format=image/png&layers=orto_foraar&srs=EPSG:3857&bbox={bbox-epsg-3857}&width=256&height=256'
+          'https://services.dataforsyningen.dk/orto_foraar?service=WMS&version=1.1.1&request=GetMap&layers=orto_foraar&styles=&format=image/png&transparent=false&srs=EPSG:3857&bbox={bbox-epsg-3857}&width=256&height=256&token=08bc5afc3cff6c89c87a5aa1b71f246b'
         ],
         tileSize: 256,
       });
@@ -643,7 +654,7 @@ const BuildingDetail = () => {
               <div className="bg-gray-200 rounded-lg aspect-[4/3] relative overflow-hidden">
                 <div 
                   ref={ortofotoMapContainer} 
-                  className="w-full h-full"
+                  className="w-full h-full absolute inset-0"
                 />
               </div>
               <p className="text-sm text-text-muted mt-4 text-center">
