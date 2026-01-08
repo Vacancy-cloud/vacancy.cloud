@@ -114,6 +114,12 @@ const BuildingDetail = () => {
       zoom: 18,
       interactive: false,
       attributionControl: false,
+      transformRequest: (url, _resourceType) => {
+        if (url.includes('dataforsyningen.dk')) {
+          return { url: url }; // Clean request
+        }
+        return { url: url };
+      },
     });
 
     ortofotoMap.current.on('load', () => {
@@ -127,6 +133,8 @@ const BuildingDetail = () => {
         ],
         tileSize: 256,
         scheme: 'xyz',
+        minzoom: 0,
+        maxzoom: 20,
       });
 
       // Add the raster layer
