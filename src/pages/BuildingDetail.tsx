@@ -102,11 +102,36 @@ const BuildingDetail = () => {
 
     ortofotoMap.current = new mapboxgl.Map({
       container: ortofotoMapContainer.current,
-      style: 'mapbox://styles/mapbox/satellite-v9',
+      style: 'mapbox://styles/mapbox/empty-v9',
       center: building.coordinates,
       zoom: 18,
       interactive: false,
       attributionControl: false,
+    });
+
+    ortofotoMap.current.on('load', () => {
+      if (!ortofotoMap.current) return;
+
+      // Add WMTS raster source with Danish Ortofoto tiles
+      ortofotoMap.current.addSource('ortofoto-wmts', {
+        type: 'raster',
+        tiles: [
+          'https://services.datafordeler.dk/GeoDanmarkOrto/orto_foraar_webm/1.0.0/WMTS/orto_foraar_webm/default/DFD_GoogleMapsCompatible/{z}/{y}/{x}.jpg?username=Vacancy&password=Asdf190599'
+        ],
+        tileSize: 256,
+      });
+
+      // Add the raster layer
+      ortofotoMap.current.addLayer({
+        id: 'ortofoto-layer',
+        type: 'raster',
+        source: 'ortofoto-wmts',
+      });
+    });
+
+    // Handle errors gracefully
+    ortofotoMap.current.on('error', () => {
+      // Error handling is handled by the bg-gray-100 background
     });
 
     return () => {
@@ -604,7 +629,7 @@ const BuildingDetail = () => {
             {/* Ortofoto Map */}
             <div className="bg-white rounded-card p-6 shadow-md">
               <h2 className="text-2xl font-bold text-text-dark mb-4">Ortofoto</h2>
-              <div className="bg-gray-200 rounded-lg aspect-video relative overflow-hidden">
+              <div className="bg-gray-100 rounded-lg aspect-video relative overflow-hidden">
                 <div 
                   ref={ortofotoMapContainer} 
                   className="w-full h-full absolute inset-0"
