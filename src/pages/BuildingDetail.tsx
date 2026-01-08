@@ -534,7 +534,7 @@ const BuildingDetail = () => {
                           key={index}
                           className={`flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden bg-white cursor-pointer transition-opacity ${
                             selectedPlanIndex === index
-                              ? 'opacity-100 ring-2 ring-primary ring-offset-1'
+                              ? 'opacity-100'
                               : 'opacity-70 hover:opacity-100'
                           }`}
                           onClick={() => setSelectedPlanIndex(index)}
@@ -1058,10 +1058,6 @@ const BuildingDetail = () => {
                           <div>
                             <span className="text-text-muted">ROI: </span>
                             <span className="font-semibold text-accent">{scenario.expectedROI}</span>
-                          </div>
-                          <div>
-                            <span className="text-text-muted">CO₂ Impact: </span>
-                            <span className="font-semibold text-text-dark">{scenario.co2Impact}</span>
                           </div>
                         </div>
                       </div>
