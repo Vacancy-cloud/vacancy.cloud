@@ -1,7 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import mapboxgl from 'mapbox-gl';
 import { buildings } from '../data/buildings';
 import { Building } from '../types';
@@ -19,6 +17,8 @@ const BuildingDetail = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const ortofotoMapContainer = useRef<HTMLDivElement>(null);
+  const ortofotoMap = useRef<mapboxgl.Map | null>(null);
 
   useEffect(() => {
     const foundBuilding = buildings.find(b => b.id === id);
@@ -91,6 +91,64 @@ const BuildingDetail = () => {
       if (map.current) {
         map.current.remove();
         map.current = null;
+      }
+    };
+  }, [building]);
+
+  // Initialize Ortofoto map
+  useEffect(() => {
+    if (!building || !ortofotoMapContainer.current || ortofotoMap.current) return;
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
+
+    ortofotoMap.current = new mapboxgl.Map({
+      container: ortofotoMapContainer.current,
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: building.coordinates,
+      zoom: 18,
+      interactive: false,
+      attributionControl: false,
+    });
+
+    // Disable all interactions (redundant with interactive: false, but explicit)
+    ortofotoMap.current.dragPan.disable();
+    ortofotoMap.current.scrollZoom.disable();
+    ortofotoMap.current.boxZoom.disable();
+    ortofotoMap.current.doubleClickZoom.disable();
+
+    // Add Ortofoto layer and hide UI elements when map loads
+    ortofotoMap.current.on('load', () => {
+      if (!ortofotoMap.current || !ortofotoMapContainer.current) return;
+
+      // Hide Mapbox logo
+      const logo = ortofotoMapContainer.current.querySelector('.mapboxgl-ctrl-logo');
+      if (logo) {
+        (logo as HTMLElement).style.display = 'none';
+      }
+
+      // Add the raster source
+      ortofotoMap.current.addSource('ortofoto', {
+        type: 'raster',
+        tiles: [
+          'https://services.dataforsyningen.dk/orto_foraar?token=08bc5afc3cff6c89c87a5aa1b71f246b&service=WMS&version=1.1.1&request=GetMap&styles=&format=image/png&layers=orto_foraar&srs=EPSG:3857&bbox={bbox-epsg-3857}&width=256&height=256'
+        ],
+        tileSize: 256,
+      });
+
+      // Add the raster layer
+      ortofotoMap.current.addLayer({
+        id: 'ortofoto-layer',
+        type: 'raster',
+        source: 'ortofoto',
+        minzoom: 0,
+        maxzoom: 22,
+      });
+    });
+
+    return () => {
+      if (ortofotoMap.current) {
+        ortofotoMap.current.remove();
+        ortofotoMap.current = null;
       }
     };
   }, [building]);
@@ -579,37 +637,17 @@ const BuildingDetail = () => {
               )}
             </div>
 
-            {/* STL 3D Model */}
+            {/* Ortofoto Map */}
             <div className="bg-white rounded-card p-6 shadow-md">
-              <h2 className="text-2xl font-bold text-text-dark mb-4">3D Model</h2>
-              <p className="text-sm text-text-muted mb-4">Drag to rotate • Scroll to zoom</p>
-              <div className="bg-gray-900 rounded-lg aspect-[4/3] relative overflow-hidden">
-                <Canvas
-                  camera={{ position: [5, 5, 5], fov: 50 }}
-                >
-                  <PerspectiveCamera makeDefault position={[5, 5, 5]} />
-                  <ambientLight intensity={0.5} />
-                  <directionalLight position={[10, 10, 5]} intensity={1} />
-                  <pointLight position={[-10, -10, -5]} intensity={0.5} />
-                  <mesh rotation={[0, 0, 0]}>
-                    <boxGeometry args={[3, 2, 2]} />
-                    <meshStandardMaterial color="#307ae1" />
-                  </mesh>
-                  <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]}>
-                    <planeGeometry args={[10, 10]} />
-                    <meshStandardMaterial color="#6b7280" />
-                  </mesh>
-                  <OrbitControls
-                    enablePan={true}
-                    enableZoom={true}
-                    enableRotate={true}
-                    minDistance={3}
-                    maxDistance={15}
-                  />
-                </Canvas>
+              <h2 className="text-2xl font-bold text-text-dark mb-4">Ortofoto</h2>
+              <div className="bg-gray-200 rounded-lg aspect-[4/3] relative overflow-hidden">
+                <div 
+                  ref={ortofotoMapContainer} 
+                  className="w-full h-full"
+                />
               </div>
               <p className="text-sm text-text-muted mt-4 text-center">
-                STL 3D model placeholder - Full 3D building model will be displayed here
+                Data: SDFI GeoDanmark
               </p>
             </div>
           </div>
