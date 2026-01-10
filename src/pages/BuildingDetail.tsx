@@ -582,7 +582,7 @@ const BuildingDetail = () => {
 
             {/* 3D Scanning Viewer */}
             <div className="bg-white rounded-card shadow-md">
-              <div className="p-6 pb-6">
+              <div className="p-6 pb-6 flex flex-col h-full">
                 <h2 className="text-2xl font-bold text-text-dark mb-2">3D Scanning</h2>
                 {(building.id === '1' || building.id === '2') && (
                   <p className="text-sm text-text-muted mb-4">Interactive Digital Twin Placeholder</p>
@@ -625,9 +625,11 @@ const BuildingDetail = () => {
                     />
                   ) : null}
                 </div>
-                <p className="text-sm text-gray-500 mt-4">
-                  This STL model was automatically generated from a photograph using a 3D reconstruction app. Geometry will be refined through professional scanning in later stages.
-                </p>
+                <div className="mt-auto">
+                  <p className="text-xs text-gray-500 mt-4">
+                    This STL model was automatically generated from a photograph using a 3D reconstruction app. Geometry will be refined through professional scanning in later stages.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -839,7 +841,7 @@ const BuildingDetail = () => {
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* Conservation Card */}
-                  <div className="border-2 border-green-200 rounded-lg p-6 bg-green-50/50">
+                  <div className="border-2 border-green-200 rounded-lg p-6 bg-green-50/50 flex flex-col h-full">
                     <div className="flex items-center mb-4">
                       <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-3">
                         <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -851,7 +853,7 @@ const BuildingDetail = () => {
                     <p className="text-sm text-text-muted mb-4">
                       Maintain existing building with current operational emissions
                     </p>
-                    <div className="pt-4 border-t border-green-200">
+                    <div className="mt-auto pt-4 border-t border-green-200">
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-text-muted uppercase tracking-wide whitespace-nowrap">CO₂ Impact</span>
                         <span className="text-2xl font-bold text-green-600">
@@ -862,7 +864,7 @@ const BuildingDetail = () => {
                   </div>
 
                   {/* Renovation Card */}
-                  <div className="border-2 border-blue-200 rounded-lg p-6 bg-blue-50/50">
+                  <div className="border-2 border-blue-200 rounded-lg p-6 bg-blue-50/50 flex flex-col h-full">
                     <div className="flex items-center mb-4">
                       <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                         <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -874,7 +876,7 @@ const BuildingDetail = () => {
                     <p className="text-sm text-text-muted mb-4">
                       Modernize building with energy-efficient upgrades
                     </p>
-                    <div className="pt-4 border-t border-blue-200">
+                    <div className="mt-auto pt-4 border-t border-blue-200">
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-text-muted uppercase tracking-wide whitespace-nowrap">CO₂ Impact</span>
                         <span className="text-2xl font-bold text-blue-600">
@@ -885,7 +887,7 @@ const BuildingDetail = () => {
                   </div>
 
                   {/* Demolition Card */}
-                  <div className="border-2 border-red-200 rounded-lg p-6 bg-red-50/50">
+                  <div className="border-2 border-red-200 rounded-lg p-6 bg-red-50/50 flex flex-col h-full">
                     <div className="flex items-center mb-4">
                       <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-3">
                         <svg className="w-6 h-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -897,7 +899,7 @@ const BuildingDetail = () => {
                     <p className="text-sm text-text-muted mb-4">
                       Demolish and rebuild to new building standards
                     </p>
-                    <div className="pt-4 border-t border-red-200">
+                    <div className="mt-auto pt-4 border-t border-red-200">
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-text-muted uppercase tracking-wide whitespace-nowrap">CO₂ Impact</span>
                         <span className="text-2xl font-bold text-red-600">
