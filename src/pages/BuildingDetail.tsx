@@ -591,6 +591,7 @@ const BuildingDetail = () => {
                   <p className="text-sm text-text-muted mb-4">Interactive Digital Twin Placeholder</p>
                 )}
                 <div className="rounded-lg aspect-[21/9] relative overflow-hidden bg-transparent flex flex-col">
+                  {/* Media wrapper - takes up all available space and centers content */}
                   <div className="flex-grow flex items-center justify-center">
                     {building.id === '3' ? (
                       // Building 3: Keep exactly as is (KiriEngine iframe)
@@ -618,23 +619,24 @@ const BuildingDetail = () => {
                         } as any)}
                       />
                     ) : building.id === '1' || building.id === '2' ? (
-                      // Buildings 1 and 2: Axonometric images - centered
+                      // Buildings 1 and 2: Axonometric images - perfectly centered
                       <img
                         src={building.id === '1' ? '/images/Toldbodvej 4/axo_Toldbodvej 4.png' : '/images/Tolbyen/axo_Tolbyen.png'}
                         alt={`${building.name} - Axonometric view`}
-                        className="max-h-full object-contain rounded-lg"
+                        className="rounded-lg"
                         style={{
+                          maxHeight: '100%',
+                          objectFit: 'contain',
                           borderRadius: '0.5rem'
                         }}
                       />
                     ) : null}
                   </div>
                 </div>
-                <div className="mt-auto">
-                  <p className="text-xs text-gray-500 mt-4">
-                    This STL model was automatically generated from a photograph using a 3D reconstruction app. Geometry will be refined through professional scanning in later stages.
-                  </p>
-                </div>
+                {/* Caption - fixed at bottom with mt-auto */}
+                <p className="text-xs text-gray-500 mt-auto pt-4 text-center">
+                  This STL model was automatically generated from a photograph using a 3D reconstruction app. Geometry will be refined through professional scanning in later stages.
+                </p>
               </div>
             </div>
           </div>
