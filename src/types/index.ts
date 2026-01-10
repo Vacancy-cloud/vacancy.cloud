@@ -80,6 +80,7 @@ export interface Building {
   isochroneGeoJSON?: GeoJSON.FeatureCollection; // Isochrone data for walkability visualization
   galleryImages?: string[]; // Array of image paths for photo gallery
   planImages?: string[]; // Array of image paths for plan drawings
+  model3dUrl?: string; // KiriEngine embed URL for 3D model viewer
 }
 
 export interface ContactFormData {

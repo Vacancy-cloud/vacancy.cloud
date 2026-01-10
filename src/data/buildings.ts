@@ -311,5 +311,6 @@ export const buildings: Building[] = [
     planImages: [
       '/images/Winsløws Vej 9A/Screenshot 2026-01-07 010256.png',
     ],
+    model3dUrl: 'https://www.kiriengine.app/share/embed/a110e78847344a4f824c092a1d0b1fa2?userId=1667429&bg_theme=bright',
   },
 ];

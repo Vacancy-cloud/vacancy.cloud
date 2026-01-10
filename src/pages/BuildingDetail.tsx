@@ -584,16 +584,39 @@ const BuildingDetail = () => {
             <div className="bg-white rounded-card shadow-md">
               <div className="p-6 pb-6">
                 <h2 className="text-2xl font-bold text-text-dark mb-4">3D Reconstruction</h2>
-                <div className="rounded-lg aspect-video relative overflow-hidden">
-                  <iframe
-                    title="3D Scan"
-                    src="https://www.kiriengine.app/share/embed/a110e78847344a4f824c092a1d0b1fa2?userId=1667429&bg_theme=transparent&btn=1"
-                    frameBorder="0"
-                    allowFullScreen
-                    allow="autoplay; fullscreen;"
-                    className="w-full h-full rounded-lg"
-                    style={{ borderRadius: '0.5rem' }}
-                  />
+                <div className="rounded-lg aspect-video relative overflow-hidden bg-gray-100">
+                  {building.model3dUrl ? (
+                    <iframe
+                      title={building.name}
+                      src={building.model3dUrl}
+                      frameBorder="0"
+                      allowFullScreen
+                      allow="autoplay; fullscreen;"
+                      className="w-full h-full rounded-lg"
+                      style={{
+                        borderRadius: '0.5rem',
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        minWidth: '100%',
+                        minHeight: '100%'
+                      }}
+                      {...({
+                        'mozallowfullscreen': true,
+                        'webkitallowfullscreen': true,
+                        'execution-while-out-of-viewport': '',
+                        'execution-while-not-rendered': ''
+                      } as any)}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
+                      <div className="text-center text-gray-400">
+                        <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                        <p className="text-sm">3D Model Coming Soon</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
