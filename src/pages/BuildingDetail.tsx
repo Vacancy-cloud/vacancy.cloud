@@ -584,57 +584,56 @@ const BuildingDetail = () => {
             </div>
 
             {/* 3D Scanning Viewer */}
-            <div className="bg-white rounded-card shadow-md">
-              <div className="p-6 flex flex-col" style={{ minHeight: '500px' }}>
-                <h2 className="text-2xl font-bold text-text-dark mb-2">3D Scanning</h2>
-                {(building.id === '1' || building.id === '2') && (
-                  <p className="text-sm text-text-muted mb-4">Interactive Digital Twin Placeholder</p>
-                )}
-                {/* Media container - takes all remaining vertical space, no background */}
-                <div className="flex-1 rounded-lg flex items-center justify-center" style={{ minHeight: '300px' }}>
-                  {building.id === '3' ? (
-                    // Building 3: KiriEngine iframe - fills frame and centered
-                    <iframe
-                      title={building.name}
-                      src={building.model3dUrl}
-                      frameBorder="0"
-                      allowFullScreen
-                      allow="autoplay; fullscreen;"
-                      className="w-full h-full rounded-lg bg-transparent"
-                      style={{
-                        borderRadius: '0.5rem',
-                        width: '100%',
-                        height: '100%',
-                        background: 'transparent',
-                        backgroundColor: 'transparent'
-                      }}
-                      {...({
-                        'mozallowfullscreen': true,
-                        'webkitallowfullscreen': true,
-                        'execution-while-out-of-viewport': '',
-                        'execution-while-not-rendered': ''
-                      } as any)}
-                    />
-                  ) : building.id === '1' || building.id === '2' ? (
-                    // Buildings 1 and 2: Axonometric images - perfectly centered, not cropped
-                    <img
-                      src={building.id === '1' ? '/images/Toldbodvej 4/axo_Toldbodvej 4.png' : '/images/Tolbyen/axo_Tolbyen.png'}
-                      alt={`${building.name} - Axonometric view`}
-                      className="rounded-lg"
-                      style={{
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        objectFit: 'contain',
-                        borderRadius: '0.5rem'
-                      }}
-                    />
-                  ) : null}
-                </div>
-                {/* Caption - independent block anchored to bottom with mt-auto - same for all buildings */}
-                <p className="text-xs text-gray-500 mt-auto pt-4 text-center">
-                  This STL model was automatically generated from a photograph using a 3D reconstruction app. Geometry will be refined through professional scanning in later stages.
-                </p>
+            <div className="p-6 flex flex-col rounded-xl bg-white shadow-md" style={{ minHeight: '500px' }}>
+              <h2 className="text-2xl font-bold text-text-dark mb-2">3D Scanning</h2>
+              {(building.id === '1' || building.id === '2') && (
+                <p className="text-sm text-text-muted mb-4">Interactive Digital Twin Placeholder</p>
+              )}
+              {/* Content section - takes all available vertical space */}
+              <div className="flex-1 flex items-center justify-center">
+                {building.id === '3' ? (
+                  // Building 3: KiriEngine iframe - fills container and centered
+                  <iframe
+                    title={building.name}
+                    src={building.model3dUrl}
+                    frameBorder="0"
+                    allowFullScreen
+                    allow="autoplay; fullscreen;"
+                    className="w-full h-full rounded-lg bg-transparent"
+                    style={{
+                      borderRadius: '0.5rem',
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      background: 'transparent',
+                      backgroundColor: 'transparent'
+                    }}
+                    {...({
+                      'mozallowfullscreen': true,
+                      'webkitallowfullscreen': true,
+                      'execution-while-out-of-viewport': '',
+                      'execution-while-not-rendered': ''
+                    } as any)}
+                  />
+                ) : building.id === '1' || building.id === '2' ? (
+                  // Buildings 1 and 2: Axonometric images - perfectly centered, not cropped
+                  <img
+                    src={building.id === '1' ? '/images/Toldbodvej 4/axo_Toldbodvej 4.png' : '/images/Tolbyen/axo_Tolbyen.png'}
+                    alt={`${building.name} - Axonometric view`}
+                    className="rounded-lg"
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      objectFit: 'contain',
+                      borderRadius: '0.5rem'
+                    }}
+                  />
+                ) : null}
               </div>
+              {/* Caption section - anchored to bottom of white container */}
+              <p className="mt-auto pt-4 text-center text-sm text-gray-600">
+                This STL model was automatically generated from a photograph using a 3D reconstruction app. Geometry will be refined through professional scanning in later stages.
+              </p>
             </div>
           </div>
 
