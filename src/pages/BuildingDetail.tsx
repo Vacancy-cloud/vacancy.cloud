@@ -591,9 +591,9 @@ const BuildingDetail = () => {
                   <p className="text-sm text-text-muted mb-4">Interactive Digital Twin Placeholder</p>
                 )}
                 {/* Grey frame - takes all remaining vertical space */}
-                <div className="flex-1 rounded-lg bg-gray-100 flex items-center justify-center mb-4" style={{ minHeight: '300px' }}>
+                <div className="flex-1 rounded-lg bg-gray-100 flex items-center justify-center" style={{ minHeight: '300px' }}>
                   {building.id === '3' ? (
-                    // Building 3: Keep exactly as is (KiriEngine iframe)
+                    // Building 3: KiriEngine iframe - fills frame and centered
                     <iframe
                       title={building.name}
                       src={building.model3dUrl}
@@ -603,10 +603,8 @@ const BuildingDetail = () => {
                       className="w-full h-full rounded-lg bg-transparent"
                       style={{
                         borderRadius: '0.5rem',
-                        maxWidth: '100%',
-                        maxHeight: '100%',
-                        minWidth: '100%',
-                        minHeight: '100%',
+                        width: '100%',
+                        height: '100%',
                         background: 'transparent',
                         backgroundColor: 'transparent'
                       }}
@@ -632,8 +630,8 @@ const BuildingDetail = () => {
                     />
                   ) : null}
                 </div>
-                {/* Caption - independent block anchored to bottom */}
-                <p className="text-xs text-gray-500 text-center">
+                {/* Caption - independent block anchored to bottom with mt-auto - same for all buildings */}
+                <p className="text-xs text-gray-500 mt-auto pt-4 text-center">
                   This STL model was automatically generated from a photograph using a 3D reconstruction app. Geometry will be refined through professional scanning in later stages.
                 </p>
               </div>
