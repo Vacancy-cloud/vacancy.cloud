@@ -1,17 +1,12 @@
-import { useEffect, useState, useRef, Suspense } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import { Rotate3d } from 'lucide-react';
 import { buildings } from '../data/buildings';
 import { Building } from '../types';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import Contact from '../components/Contact';
 import { calculateCarbonImpact, type CarbonAnalysis } from '@/utils/co2-calculator';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
-import * as THREE from 'three';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Set Mapbox access token
@@ -100,52 +95,6 @@ const BuildingDetail = () => {
     };
   }, [building]);
 
-  // STL Model Component
-  const STLModel = () => {
-    const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
-    const meshRef = useRef<THREE.Mesh>(null);
-
-    useEffect(() => {
-      const loader = new STLLoader();
-      loader.load(
-        '/models/Building3.stl',
-        (loadedGeometry) => {
-          // Compute bounding box to center and scale
-          loadedGeometry.computeBoundingBox();
-          const box = loadedGeometry.boundingBox;
-          if (box) {
-            const center = new THREE.Vector3();
-            box.getCenter(center);
-            
-            // Translate to center
-            loadedGeometry.translate(-center.x, -center.y, -center.z);
-            
-            // Scale to fit nicely in viewport
-            const size = box.getSize(new THREE.Vector3());
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const scale = 2 / maxDim;
-            loadedGeometry.scale(scale, scale, scale);
-          }
-          
-          setGeometry(loadedGeometry);
-        },
-        undefined,
-        (error) => {
-          console.error('Error loading STL:', error);
-        }
-      );
-    }, []);
-
-    if (!geometry) {
-      return null;
-    }
-
-    return (
-      <mesh ref={meshRef} geometry={geometry}>
-        <meshStandardMaterial color="#8b9dc3" metalness={0.3} roughness={0.7} />
-      </mesh>
-    );
-  };
 
   if (!building) {
     return (
@@ -631,31 +580,19 @@ const BuildingDetail = () => {
               )}
             </div>
 
-            {/* 3D Model Viewer */}
+            {/* 3D Reconstruction Viewer */}
             <div className="bg-white rounded-card p-6 shadow-md">
-              <h2 className="text-2xl font-bold text-text-dark mb-4">3D Model</h2>
+              <h2 className="text-2xl font-bold text-text-dark mb-4">3D Reconstruction</h2>
               <div className="bg-[#f3f4f6] rounded-lg aspect-video relative overflow-hidden">
-                <Canvas
-                  camera={{ position: [0, 0, 5], fov: 50 }}
-                  style={{ background: '#f3f4f6' }}
-                >
-                  <ambientLight intensity={0.5} />
-                  <directionalLight position={[10, 10, 5]} intensity={1} />
-                  <Suspense fallback={null}>
-                    <STLModel />
-                  </Suspense>
-                  <OrbitControls
-                    enableZoom={true}
-                    enablePan={false}
-                    enableRotate={true}
-                    minDistance={2}
-                    maxDistance={10}
-                  />
-                </Canvas>
-                {/* Rotation indicator icon */}
-                <div className="absolute top-4 right-4 z-10">
-                  <Rotate3d className="w-5 h-5 text-gray-500 opacity-60" />
-                </div>
+                <iframe
+                  title="3D Scan"
+                  src="https://www.kiriengine.app/share/embed/a110e78847344a4f824c092a1d0b1fa2?userId=1667429&bg_theme=transparent&btn=1"
+                  frameBorder="0"
+                  allowFullScreen
+                  allow="autoplay; fullscreen;"
+                  className="w-full h-full rounded-lg"
+                  style={{ borderRadius: '0.5rem' }}
+                />
               </div>
             </div>
           </div>
