@@ -1,6 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
+// Note: @react-three/fiber and @react-three/drei imports ready for future STL model support
+// import { Canvas } from '@react-three/fiber';
+// import { Center, OrbitControls } from '@react-three/drei';
 import { buildings } from '../data/buildings';
 import { Building } from '../types';
 import Navigation from '../components/Navigation';
@@ -587,7 +590,7 @@ const BuildingDetail = () => {
                 {(building.id === '1' || building.id === '2') && (
                   <p className="text-sm text-text-muted mb-4">Interactive Digital Twin Placeholder</p>
                 )}
-                <div className="rounded-lg aspect-[21/9] relative overflow-hidden bg-transparent">
+                <div className="rounded-lg aspect-[21/9] relative overflow-hidden bg-transparent flex items-center justify-center">
                   {building.id === '3' ? (
                     // Building 3: Keep exactly as is (KiriEngine iframe)
                     <iframe
@@ -614,11 +617,11 @@ const BuildingDetail = () => {
                       } as any)}
                     />
                   ) : building.id === '1' || building.id === '2' ? (
-                    // Buildings 1 and 2: Axonometric images
+                    // Buildings 1 and 2: Axonometric images - centered
                     <img
                       src={building.id === '1' ? '/images/Toldbodvej 4/axo_Toldbodvej 4.png' : '/images/Tolbyen/axo_Tolbyen.png'}
                       alt={`${building.name} - Axonometric view`}
-                      className="w-full h-full object-contain rounded-lg"
+                      className="max-w-full max-h-full object-contain rounded-lg"
                       style={{
                         borderRadius: '0.5rem'
                       }}
