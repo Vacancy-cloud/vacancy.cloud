@@ -1,19 +1,22 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import { Rotate3d } from 'lucide-react';
 import { buildings } from '../data/buildings';
 import { Building } from '../types';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import Contact from '../components/Contact';
 import { calculateCarbonImpact, type CarbonAnalysis } from '@/utils/co2-calculator';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import * as THREE from 'three';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Set Mapbox access token
 mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
 
-// Dataforsyningen API token
-const DATAFORSYNINGEN_TOKEN = '08bc5afc3cff6c89c87a5aa1b71f246b';
 
 const BuildingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,8 +26,6 @@ const BuildingDetail = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const ortofotoMapContainer = useRef<HTMLDivElement>(null);
-  const ortofotoMap = useRef<mapboxgl.Map | null>(null);
 
   useEffect(() => {
     const foundBuilding = buildings.find(b => b.id === id);
@@ -99,72 +100,52 @@ const BuildingDetail = () => {
     };
   }, [building]);
 
-  // Initialize Ortofoto map
-  useEffect(() => {
-    if (!building || !ortofotoMapContainer.current || ortofotoMap.current) return;
+  // STL Model Component
+  const STLModel = () => {
+    const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
+    const meshRef = useRef<THREE.Mesh>(null);
 
-    ortofotoMap.current = new mapboxgl.Map({
-      container: ortofotoMapContainer.current,
-      style: {
-        version: 8,
-        sources: {},
-        layers: []
-      },
-      center: building.coordinates,
-      zoom: 18,
-      interactive: false,
-      attributionControl: false,
-      transformRequest: (url) => {
-        if (url.includes('api.dataforsyningen.dk')) {
-          // Регулярное выражение находит /zoom/x/y и меняет их на /zoom/y/x
-          const regex = /\/(\d+)\/(\d+)\/(\d+)\.jpeg/;
-          const match = url.match(regex);
-          if (match) {
-            const [full, z, x, y] = match;
-            const correctedUrl = url.replace(full, `/${z}/${y}/${x}.jpeg`);
-            return { url: correctedUrl };
+    useEffect(() => {
+      const loader = new STLLoader();
+      loader.load(
+        '/models/Building3.stl',
+        (loadedGeometry) => {
+          // Compute bounding box to center and scale
+          loadedGeometry.computeBoundingBox();
+          const box = loadedGeometry.boundingBox;
+          if (box) {
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            
+            // Translate to center
+            loadedGeometry.translate(-center.x, -center.y, -center.z);
+            
+            // Scale to fit nicely in viewport
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const scale = 2 / maxDim;
+            loadedGeometry.scale(scale, scale, scale);
           }
+          
+          setGeometry(loadedGeometry);
+        },
+        undefined,
+        (error) => {
+          console.error('Error loading STL:', error);
         }
-        return { url };
-      },
-    });
+      );
+    }, []);
 
-    ortofotoMap.current.on('load', () => {
-      if (!ortofotoMap.current) return;
+    if (!geometry) {
+      return null;
+    }
 
-      // Add Dataforsyningen WMTS raster source with Danish Ortofoto tiles
-      ortofotoMap.current.addSource('ortofoto-source', {
-        type: 'raster',
-        tiles: [
-          `https://api.dataforsyningen.dk/orto_foraar_webm_DAF/1.0.0/WMTS/orto_foraar_webm/default/DFD_GoogleMapsCompatible/{z}/{x}/{y}.jpeg?token=${DATAFORSYNINGEN_TOKEN}`
-        ],
-        tileSize: 256,
-        scheme: 'xyz',
-        minzoom: 0,
-        maxzoom: 20,
-      });
-
-      // Add the raster layer
-      ortofotoMap.current.addLayer({
-        id: 'ortofoto-layer',
-        type: 'raster',
-        source: 'ortofoto-source',
-      });
-    });
-
-    // Handle errors gracefully
-    ortofotoMap.current.on('error', (e) => {
-      console.log('Mapbox Error:', e);
-      // Error handling is handled by the bg-gray-100 background
-    });
-
-    return () => {
-      if (ortofotoMap.current) {
-        ortofotoMap.current.remove();
-        ortofotoMap.current = null;
-      }
-    };
-  }, [building]);
+    return (
+      <mesh ref={meshRef} geometry={geometry}>
+        <meshStandardMaterial color="#8b9dc3" metalness={0.3} roughness={0.7} />
+      </mesh>
+    );
+  };
 
   if (!building) {
     return (
@@ -650,18 +631,32 @@ const BuildingDetail = () => {
               )}
             </div>
 
-            {/* Ortofoto Map */}
+            {/* 3D Model Viewer */}
             <div className="bg-white rounded-card p-6 shadow-md">
-              <h2 className="text-2xl font-bold text-text-dark mb-4">Ortofoto</h2>
-              <div className="bg-gray-100 rounded-lg aspect-video relative overflow-hidden">
-                <div 
-                  ref={ortofotoMapContainer} 
-                  className="w-full h-full absolute inset-0"
-                />
+              <h2 className="text-2xl font-bold text-text-dark mb-4">3D Model</h2>
+              <div className="bg-[#f3f4f6] rounded-lg aspect-video relative overflow-hidden">
+                <Canvas
+                  camera={{ position: [0, 0, 5], fov: 50 }}
+                  style={{ background: '#f3f4f6' }}
+                >
+                  <ambientLight intensity={0.5} />
+                  <directionalLight position={[10, 10, 5]} intensity={1} />
+                  <Suspense fallback={null}>
+                    <STLModel />
+                  </Suspense>
+                  <OrbitControls
+                    enableZoom={true}
+                    enablePan={false}
+                    enableRotate={true}
+                    minDistance={2}
+                    maxDistance={10}
+                  />
+                </Canvas>
+                {/* Rotation indicator icon */}
+                <div className="absolute top-4 right-4 z-10">
+                  <Rotate3d className="w-5 h-5 text-gray-500 opacity-60" />
+                </div>
               </div>
-              <p className="text-sm text-text-muted mt-4 text-center">
-                Data: SDFI GeoDanmark
-              </p>
             </div>
           </div>
 
