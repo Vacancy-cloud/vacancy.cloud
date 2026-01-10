@@ -584,7 +584,7 @@ const BuildingDetail = () => {
             <div className="bg-white rounded-card shadow-md">
               <div className="p-6 pb-6">
                 <h2 className="text-2xl font-bold text-text-dark mb-4">3D Reconstruction</h2>
-                <div className="rounded-lg aspect-video relative overflow-hidden bg-gray-100">
+                <div className="rounded-lg aspect-[21/9] relative overflow-hidden">
                   {building.model3dUrl ? (
                     <iframe
                       title={building.name}
@@ -608,12 +608,12 @@ const BuildingDetail = () => {
                       } as any)}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
+                    <div className="w-full h-full flex items-center justify-center rounded-lg">
                       <div className="text-center text-gray-400">
                         <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
-                        <p className="text-sm">3D Model Coming Soon</p>
+                        <p className="text-sm">3D Scanning</p>
                       </div>
                     </div>
                   )}
