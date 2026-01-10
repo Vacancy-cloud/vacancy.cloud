@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
 import { buildings } from '../data/buildings';
 import { Building } from '../types';
 import Navigation from '../components/Navigation';
@@ -616,27 +614,15 @@ const BuildingDetail = () => {
                       } as any)}
                     />
                   ) : building.id === '1' || building.id === '2' ? (
-                    // Buildings 1 and 2: 3D Cube with manual controls
-                    <Canvas
-                      camera={{ position: [0, 0, 5], fov: 50 }}
-                      gl={{ alpha: true, antialias: true }}
-                      style={{ background: 'transparent' }}
-                    >
-                      <ambientLight intensity={0.6} />
-                      <directionalLight position={[10, 10, 5]} intensity={0.8} />
-                      <mesh>
-                        <boxGeometry args={[2, 2, 2]} />
-                        <meshStandardMaterial color="#c0c0c0" metalness={0.3} roughness={0.4} />
-                      </mesh>
-                      <OrbitControls
-                        enableZoom={true}
-                        enablePan={false}
-                        enableRotate={true}
-                        autoRotate={false}
-                        minDistance={3}
-                        maxDistance={8}
-                      />
-                    </Canvas>
+                    // Buildings 1 and 2: Axonometric images
+                    <img
+                      src={building.id === '1' ? '/images/Toldbodvej 4/axo_Toldbodvej 4.png' : '/images/Tolbyen/axo_Tolbyen.png'}
+                      alt={`${building.name} - Axonometric view`}
+                      className="w-full h-full object-contain rounded-lg"
+                      style={{
+                        borderRadius: '0.5rem'
+                      }}
+                    />
                   ) : null}
                 </div>
               </div>
