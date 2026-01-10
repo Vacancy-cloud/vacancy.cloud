@@ -852,9 +852,9 @@ const BuildingDetail = () => {
                       Maintain existing building with current operational emissions
                     </p>
                     <div className="pt-4 border-t border-green-200">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-xs text-text-muted uppercase tracking-wide leading-none">CO₂ Impact</span>
-                        <span className="text-2xl font-bold text-green-600 leading-tight">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-text-muted uppercase tracking-wide whitespace-nowrap">CO₂ Impact</span>
+                        <span className="text-2xl font-bold text-green-600">
                           {carbonAnalysis.conservation.toFixed(1)} kg CO₂e/m²/y
                         </span>
                       </div>
@@ -875,9 +875,9 @@ const BuildingDetail = () => {
                       Modernize building with energy-efficient upgrades
                     </p>
                     <div className="pt-4 border-t border-blue-200">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-xs text-text-muted uppercase tracking-wide leading-none">CO₂ Impact</span>
-                        <span className="text-2xl font-bold text-blue-600 leading-tight">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-text-muted uppercase tracking-wide whitespace-nowrap">CO₂ Impact</span>
+                        <span className="text-2xl font-bold text-blue-600">
                           {carbonAnalysis.renovation.toFixed(1)} kg CO₂e/m²/y
                         </span>
                       </div>
@@ -898,9 +898,9 @@ const BuildingDetail = () => {
                       Demolish and rebuild to new building standards
                     </p>
                     <div className="pt-4 border-t border-red-200">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-xs text-text-muted uppercase tracking-wide leading-none">CO₂ Impact</span>
-                        <span className="text-2xl font-bold text-red-600 leading-tight">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-text-muted uppercase tracking-wide whitespace-nowrap">CO₂ Impact</span>
+                        <span className="text-2xl font-bold text-red-600">
                           {carbonAnalysis.demolition.toFixed(1)} kg CO₂e/m²/y
                         </span>
                       </div>
