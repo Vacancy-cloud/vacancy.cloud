@@ -1,20 +1,84 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
-// Note: @react-three/fiber and @react-three/drei imports ready for future STL model support
-// import { Canvas } from '@react-three/fiber';
-// import { Center, OrbitControls } from '@react-three/drei';
+import { Canvas, useThree } from '@react-three/fiber';
+import { Center, OrbitControls } from '@react-three/drei';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import * as THREE from 'three';
 import { buildings } from '../data/buildings';
 import { Building } from '../types';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import Contact from '../components/Contact';
 import { calculateCarbonImpact, type CarbonAnalysis } from '@/utils/co2-calculator';
+import { Rotate3d } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Set Mapbox access token
 mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
 
+// Auto-fit camera to model bounds
+const CameraFit = ({ target }: { target: THREE.Object3D | null }) => {
+  const { camera } = useThree();
+  const fittedRef = useRef(false);
+
+  useEffect(() => {
+    if (!fittedRef.current && target) {
+      const box = new THREE.Box3().setFromObject(target);
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
+      
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const distance = maxDim * 2.5; // Distance to fit ~80% of viewer
+      
+      // Position camera
+      camera.position.set(center.x + distance * 0.7, center.y + distance * 0.7, center.z + distance * 0.7);
+      camera.lookAt(center);
+      camera.updateProjectionMatrix();
+      
+      fittedRef.current = true;
+    }
+  }, [target, camera]);
+
+  return null;
+};
+
+// STL Model Component with auto-fit
+const STLModel = ({ url }: { url: string }) => {
+  const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useEffect(() => {
+    const loader = new STLLoader();
+    loader.load(
+      url,
+      (loadedGeometry) => {
+        // Center the geometry
+        loadedGeometry.center();
+        // Compute bounding box
+        loadedGeometry.computeBoundingBox();
+        setGeometry(loadedGeometry);
+      },
+      undefined,
+      (error) => {
+        console.error('Error loading STL:', error);
+      }
+    );
+  }, [url]);
+
+  if (!geometry) {
+    return null;
+  }
+
+  return (
+    <Center>
+      <mesh ref={meshRef} geometry={geometry}>
+        <meshStandardMaterial color="#8b9dc3" metalness={0.3} roughness={0.7} />
+      </mesh>
+      {meshRef.current && <CameraFit target={meshRef.current} />}
+    </Center>
+  );
+};
 
 const BuildingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +86,7 @@ const BuildingDetail = () => {
   const [building, setBuilding] = useState<Building | null>(null);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
 
@@ -32,6 +97,7 @@ const BuildingDetail = () => {
       // Reset image indices when building changes
       setSelectedPlanIndex(0);
       setSelectedImageIndex(0);
+      setHasInteracted(false);
     } else {
       navigate('/');
     }
@@ -590,7 +656,7 @@ const BuildingDetail = () => {
                 <p className="text-sm text-text-muted mb-4">Interactive Digital Twin Placeholder</p>
               )}
               {/* Content section - takes all available vertical space */}
-              <div className="flex-1 flex items-center justify-center">
+              <div className="flex-1 flex items-center justify-center relative">
                 {building.id === '3' ? (
                   // Building 3: KiriEngine iframe - fills container and centered
                   <iframe
@@ -628,6 +694,52 @@ const BuildingDetail = () => {
                       borderRadius: '0.5rem'
                     }}
                   />
+                ) : building.model3dUrl && building.model3dUrl.endsWith('.stl') ? (
+                  // STL Model Viewer with auto-fit
+                  <div 
+                    className="w-full h-full rounded-lg overflow-hidden relative"
+                    onMouseDown={() => setHasInteracted(true)}
+                    onTouchStart={() => setHasInteracted(true)}
+                  >
+                    <Canvas
+                      camera={{ position: [3, 3, 3], fov: 50 }}
+                      gl={{ alpha: true, antialias: true }}
+                      style={{ background: 'transparent' }}
+                    >
+                      <ambientLight intensity={0.6} />
+                      <directionalLight position={[10, 10, 5]} intensity={0.8} />
+                      <Suspense fallback={null}>
+                        <STLModel url={building.model3dUrl} />
+                      </Suspense>
+                      <OrbitControls
+                        makeDefault
+                        enableZoom={true}
+                        enablePan={false}
+                        enableRotate={true}
+                        autoRotate={false}
+                        minDistance={1}
+                        maxDistance={20}
+                        onChange={() => setHasInteracted(true)}
+                      />
+                    </Canvas>
+                    {/* Interaction hint icon */}
+                    <div 
+                      className={`absolute top-4 right-4 z-10 transition-opacity duration-500 ${hasInteracted ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                      style={{ pointerEvents: 'none' }}
+                    >
+                      <div className="group relative">
+                        <div className="w-10 h-10 rounded-full bg-white/50 backdrop-blur-sm flex items-center justify-center shadow-lg border border-white/20">
+                          <Rotate3d className="w-5 h-5 text-gray-700" />
+                        </div>
+                        {/* Tooltip */}
+                        <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                          <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded shadow-lg">
+                            Drag to rotate
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ) : null}
               </div>
               {/* Caption section - anchored to bottom of white container */}
