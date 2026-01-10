@@ -581,18 +581,20 @@ const BuildingDetail = () => {
             </div>
 
             {/* 3D Reconstruction Viewer */}
-            <div className="bg-white rounded-card p-6 shadow-md">
-              <h2 className="text-2xl font-bold text-text-dark mb-4">3D Reconstruction</h2>
-              <div className="bg-[#f3f4f6] rounded-lg aspect-video relative overflow-hidden">
-                <iframe
-                  title="3D Scan"
-                  src="https://www.kiriengine.app/share/embed/a110e78847344a4f824c092a1d0b1fa2?userId=1667429&bg_theme=transparent&btn=1"
-                  frameBorder="0"
-                  allowFullScreen
-                  allow="autoplay; fullscreen;"
-                  className="w-full h-full rounded-lg"
-                  style={{ borderRadius: '0.5rem' }}
-                />
+            <div className="bg-white rounded-card shadow-md">
+              <div className="p-6 pb-6">
+                <h2 className="text-2xl font-bold text-text-dark mb-4">3D Reconstruction</h2>
+                <div className="rounded-lg aspect-video relative overflow-hidden">
+                  <iframe
+                    title="3D Scan"
+                    src="https://www.kiriengine.app/share/embed/a110e78847344a4f824c092a1d0b1fa2?userId=1667429&bg_theme=transparent&btn=1"
+                    frameBorder="0"
+                    allowFullScreen
+                    allow="autoplay; fullscreen;"
+                    className="w-full h-full rounded-lg"
+                    style={{ borderRadius: '0.5rem' }}
+                  />
+                </div>
               </div>
             </div>
           </div>
