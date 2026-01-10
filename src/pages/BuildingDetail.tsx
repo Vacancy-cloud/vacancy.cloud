@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import mapboxgl from 'mapbox-gl';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
 import { buildings } from '../data/buildings';
 import { Building } from '../types';
 import Navigation from '../components/Navigation';
@@ -580,25 +582,31 @@ const BuildingDetail = () => {
               )}
             </div>
 
-            {/* 3D Reconstruction Viewer */}
+            {/* 3D Scanning Viewer */}
             <div className="bg-white rounded-card shadow-md">
               <div className="p-6 pb-6">
-                <h2 className="text-2xl font-bold text-text-dark mb-4">3D Reconstruction</h2>
-                <div className="rounded-lg aspect-[21/9] relative overflow-hidden">
-                  {building.model3dUrl ? (
+                <h2 className="text-2xl font-bold text-text-dark mb-2">3D Scanning</h2>
+                {(building.id === '1' || building.id === '2') && (
+                  <p className="text-sm text-text-muted mb-4">Interactive Digital Twin Placeholder</p>
+                )}
+                <div className="rounded-lg aspect-[21/9] relative overflow-hidden bg-transparent">
+                  {building.id === '3' ? (
+                    // Building 3: Keep exactly as is (KiriEngine iframe)
                     <iframe
                       title={building.name}
                       src={building.model3dUrl}
                       frameBorder="0"
                       allowFullScreen
                       allow="autoplay; fullscreen;"
-                      className="w-full h-full rounded-lg"
+                      className="w-full h-full rounded-lg bg-transparent"
                       style={{
                         borderRadius: '0.5rem',
                         maxWidth: '100%',
                         maxHeight: '100%',
                         minWidth: '100%',
-                        minHeight: '100%'
+                        minHeight: '100%',
+                        background: 'transparent',
+                        backgroundColor: 'transparent'
                       }}
                       {...({
                         'mozallowfullscreen': true,
@@ -607,16 +615,29 @@ const BuildingDetail = () => {
                         'execution-while-not-rendered': ''
                       } as any)}
                     />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center rounded-lg">
-                      <div className="text-center text-gray-400">
-                        <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
-                        <p className="text-sm">3D Scanning</p>
-                      </div>
-                    </div>
-                  )}
+                  ) : building.id === '1' || building.id === '2' ? (
+                    // Buildings 1 and 2: 3D Cube with manual controls
+                    <Canvas
+                      camera={{ position: [0, 0, 5], fov: 50 }}
+                      gl={{ alpha: true, antialias: true }}
+                      style={{ background: 'transparent' }}
+                    >
+                      <ambientLight intensity={0.6} />
+                      <directionalLight position={[10, 10, 5]} intensity={0.8} />
+                      <mesh>
+                        <boxGeometry args={[2, 2, 2]} />
+                        <meshStandardMaterial color="#c0c0c0" metalness={0.3} roughness={0.4} />
+                      </mesh>
+                      <OrbitControls
+                        enableZoom={true}
+                        enablePan={false}
+                        enableRotate={true}
+                        autoRotate={false}
+                        minDistance={3}
+                        maxDistance={8}
+                      />
+                    </Canvas>
+                  ) : null}
                 </div>
               </div>
             </div>
