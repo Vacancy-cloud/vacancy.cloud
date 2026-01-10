@@ -590,8 +590,8 @@ const BuildingDetail = () => {
                 {(building.id === '1' || building.id === '2') && (
                   <p className="text-sm text-text-muted mb-4">Interactive Digital Twin Placeholder</p>
                 )}
-                {/* Grey frame - takes all remaining vertical space */}
-                <div className="flex-1 rounded-lg bg-gray-100 flex items-center justify-center" style={{ minHeight: '300px' }}>
+                {/* Media container - takes all remaining vertical space, no background */}
+                <div className="flex-1 rounded-lg flex items-center justify-center" style={{ minHeight: '300px' }}>
                   {building.id === '3' ? (
                     // Building 3: KiriEngine iframe - fills frame and centered
                     <iframe
