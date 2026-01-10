@@ -625,6 +625,9 @@ const BuildingDetail = () => {
                     />
                   ) : null}
                 </div>
+                <p className="text-sm text-gray-500 mt-4">
+                  This STL model was automatically generated from a photograph using a 3D reconstruction app. Geometry will be refined through professional scanning in later stages.
+                </p>
               </div>
             </div>
           </div>
@@ -849,10 +852,12 @@ const BuildingDetail = () => {
                       Maintain existing building with current operational emissions
                     </p>
                     <div className="pt-4 border-t border-green-200">
-                      <span className="text-xs text-text-muted uppercase tracking-wide">CO₂ Impact</span>
-                      <p className="text-2xl font-bold text-green-600 mt-2">
-                        {carbonAnalysis.conservation.toFixed(1)} kg CO₂e/m²/y
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-text-muted uppercase tracking-wide">CO₂ Impact</span>
+                        <span className="text-2xl font-bold text-green-600">
+                          {carbonAnalysis.conservation.toFixed(1)} kg CO₂e/m²/y
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -870,10 +875,12 @@ const BuildingDetail = () => {
                       Modernize building with energy-efficient upgrades
                     </p>
                     <div className="pt-4 border-t border-blue-200">
-                      <span className="text-xs text-text-muted uppercase tracking-wide">CO₂ Impact</span>
-                      <p className="text-2xl font-bold text-blue-600 mt-2">
-                        {carbonAnalysis.renovation.toFixed(1)} kg CO₂e/m²/y
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-text-muted uppercase tracking-wide">CO₂ Impact</span>
+                        <span className="text-2xl font-bold text-blue-600">
+                          {carbonAnalysis.renovation.toFixed(1)} kg CO₂e/m²/y
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -891,10 +898,12 @@ const BuildingDetail = () => {
                       Demolish and rebuild to new building standards
                     </p>
                     <div className="pt-4 border-t border-red-200">
-                      <span className="text-xs text-text-muted uppercase tracking-wide">CO₂ Impact</span>
-                      <p className="text-2xl font-bold text-red-600 mt-2">
-                        {carbonAnalysis.demolition.toFixed(1)} kg CO₂e/m²/y
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-text-muted uppercase tracking-wide">CO₂ Impact</span>
+                        <span className="text-2xl font-bold text-red-600">
+                          {carbonAnalysis.demolition.toFixed(1)} kg CO₂e/m²/y
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
