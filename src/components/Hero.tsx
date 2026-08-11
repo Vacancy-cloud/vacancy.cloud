@@ -11,28 +11,48 @@ const Hero = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(48,122,225,0.1),transparent_50%)]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-text-dark mb-6 leading-tight">
-          Turning Data into
-          <br />
-          <span className="text-primary">Effective Decisions</span>
-        </h1>
-        
-        <p className="text-xl sm:text-2xl md:text-3xl text-text-muted mb-12 max-w-4xl mx-auto">
-          AI-Platform for managing Vacant and Underutilized Buildings in Denmark
+        <p className="text-xl sm:text-2xl md:text-3xl font-bold text-primary mb-6 tracking-tight">
+          Vacancy.Cloud
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-text-dark mb-6 leading-tight">
+          Upgrade aging buildings.
+          <br />
+          <span className="text-primary">Preserve what matters.</span>
+        </h1>
+
+        <p className="text-lg sm:text-xl md:text-2xl text-text-muted mb-12 max-w-4xl mx-auto leading-relaxed">
+          AI-driven decision platform helping property owners and developers upgrade
+          low-performing existing buildings from F/G toward A/B energy performance — while
+          retaining existing structures and supporting access to green financing.
+        </p>
+
+        {/* Transformation indicator */}
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 mb-8 text-lg sm:text-xl md:text-2xl font-semibold">
+          <span className="text-text-muted">F / G</span>
+          <span className="text-primary" aria-hidden="true">
+            →
+          </span>
+          <span className="text-primary">Vacancy.Cloud</span>
+          <span className="text-primary" aria-hidden="true">
+            →
+          </span>
+          <span className="text-text-dark">A / B</span>
+        </div>
+
+        {/* Benefit labels */}
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mb-12 text-sm sm:text-base text-text-muted">
+          <span>↓ Operational Carbon</span>
+          <span>↓ Embodied Carbon</span>
+          <span>↑ Asset Value</span>
+        </div>
+
+        <div className="flex justify-center items-center">
           <button
-            onClick={() => smoothScrollTo('demo')}
+            onClick={() => smoothScrollTo('workflow')}
             className="px-8 py-4 bg-primary text-white rounded-lg font-semibold text-lg hover:bg-primary/90 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
-            Try Demo
-          </button>
-          <button
-            onClick={() => smoothScrollTo('contact')}
-            className="px-8 py-4 bg-white text-primary border-2 border-primary rounded-lg font-semibold text-lg hover:bg-primary/5 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            Contact Us
+            Explore how it works
           </button>
         </div>
       </div>
@@ -44,5 +64,3 @@ const Hero = () => {
 };
 
 export default Hero;
-
-

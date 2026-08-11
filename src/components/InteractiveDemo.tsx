@@ -16,7 +16,7 @@ const InteractiveDemo = () => {
           Interactive Demo
         </h2>
         <p className="text-center text-text-muted text-lg mb-12 max-w-2xl mx-auto">
-          Explore vacant buildings across Denmark. Click on markers to view detailed information.
+          Explore sample aging buildings and see how Vacancy.Cloud supports renovation, retention, and reuse decisions. Click a marker to open building insights.
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_450px] gap-6 mb-6">

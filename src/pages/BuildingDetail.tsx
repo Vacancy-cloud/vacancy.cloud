@@ -15,7 +15,7 @@ import { Rotate3d } from 'lucide-react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Set Mapbox access token
-mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
 // Auto-fit camera to model bounds
 const CameraFit = ({ target }: { target: THREE.Object3D | null }) => {

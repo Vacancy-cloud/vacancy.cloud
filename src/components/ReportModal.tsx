@@ -88,11 +88,11 @@ const ReportModal = ({ building, onClose }: ReportModalProps) => {
                   {section}
                 </h3>
                 <p className="text-text-muted text-sm ml-11">
-                  {section === 'Executive Summary' && 'Comprehensive overview of building potential, key metrics, and investment highlights.'}
-                  {section === 'Risk Assessment' && 'Detailed analysis of structural risks, environmental factors, and regulatory considerations.'}
-                  {section === 'Renovation Scenarios' && 'Multiple renovation pathways with cost estimates, timelines, and feasibility analysis.'}
-                  {section === 'ROI Projections' && 'Financial projections including return on investment, payback periods, and market comparisons.'}
-                  {section === 'ESG Impact' && 'Environmental, social, and governance impact assessment with sustainability metrics.'}
+                  {section === 'Executive Summary' && 'Overview of upgrade potential, energy performance pathway, and key decision metrics.'}
+                  {section === 'Risk Assessment' && 'Structural, environmental, and regulatory risks affecting renovation and retention options.'}
+                  {section === 'Renovation Scenarios' && 'Compare renovation, retention, selective dismantling, and reuse pathways with cost and carbon estimates.'}
+                  {section === 'ROI Projections' && 'Financial outcomes including upgrade returns, payback periods, and green financing readiness.'}
+                  {section === 'ESG Impact' && 'Operational and embodied carbon impact with sustainability metrics for owners and financiers.'}
                 </p>
               </div>
             ))}

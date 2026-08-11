@@ -29,7 +29,7 @@ const Team = () => {
           The Team
         </h2>
         <p className="text-center text-text-muted text-lg mb-12 max-w-2xl mx-auto">
-          Building the future of data-driven property decisions
+          Building decision support for owners, investors, and developers upgrading aging assets
         </p>
 
         {/* Founder Cards */}
@@ -75,11 +75,12 @@ const Team = () => {
           <div className="bg-white rounded-card p-8 shadow-md">
             <h3 className="text-2xl font-bold text-text-dark mb-4 text-center">Our Mission</h3>
             <p className="text-text-muted leading-relaxed text-center">
-              We believe that vacant and underutilized buildings represent untapped potential for communities,
-              investors, and property owners. By combining advanced AI technology with comprehensive building data,
-              we empower stakeholders to make informed decisions that benefit everyone. Our platform transforms
-              complex data into actionable insights, helping to revitalize neighborhoods, optimize investments,
-              and create sustainable urban development across Denmark and beyond.
+              Aging buildings can be upgraded rather than replaced. Vacancy.Cloud helps property owners,
+              real estate investors, developers, and asset managers evaluate energy renovation, structural
+              retention, selective dismantling, circular material reuse, and green financing — so capital
+              decisions reduce operational and embodied carbon while protecting asset value. Engineers,
+              energy auditors, demolition contractors, material recyclers, and financial institutions use
+              the same evidence base to execute and fund those pathways.
             </p>
           </div>
         </div>

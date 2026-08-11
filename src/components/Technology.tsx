@@ -4,9 +4,9 @@ const Technology = () => {
       phase: 'CURRENT',
       title: 'Current Phase',
       items: [
-        'Data collection',
-        'UX prototype',
-        'Municipality partnerships',
+        'Decision-support prototype',
+        'Energy & carbon scenario modeling',
+        'Pilots with property owners and developers',
       ],
       color: 'bg-primary',
     },
@@ -15,7 +15,7 @@ const Technology = () => {
       title: 'Next Phase',
       items: [
         'AI model development',
-        'Expanded dataset',
+        'Circular reuse & financing workflows',
       ],
       color: 'bg-accent',
     },
@@ -24,7 +24,7 @@ const Technology = () => {
       title: 'Future Vision',
       items: [
         'European expansion',
-        'API access',
+        'API access for partners',
       ],
       color: 'bg-text-muted',
     },
@@ -37,8 +37,8 @@ const Technology = () => {
           Technology & Roadmap
         </h2>
         <p className="text-center text-text-muted text-lg mb-12 max-w-3xl mx-auto">
-          Our platform leverages cutting-edge GIS integration, AI models, and photogrammetry technology
-          to provide comprehensive building analysis and investment insights.
+          GIS, AI, and building analytics combined to evaluate renovation, retention, selective
+          dismantling, material reuse, and green financing options for aging assets.
         </p>
 
         {/* Technology Description */}
@@ -46,21 +46,22 @@ const Technology = () => {
           <div className="bg-background rounded-card p-8 shadow-md">
             <h3 className="text-xl font-bold text-text-dark mb-4">Our Technology Stack</h3>
             <p className="text-text-muted leading-relaxed mb-4">
-              Vacancy.Cloud combines advanced geospatial data processing with machine learning algorithms
-              to analyze building conditions, calculate renovation costs, and predict investment returns.
+              Vacancy.Cloud combines geospatial data processing with machine learning to help owners,
+              investors, and developers compare upgrade pathways — from energy renovation and structural
+              retention to circular material reuse and financing readiness.
             </p>
             <ul className="space-y-2 text-text-muted">
               <li className="flex items-start">
                 <span className="text-accent mr-2">•</span>
-                <span><strong className="text-text-dark">GIS Integration:</strong> Seamless integration with cadastral data and geographic information systems</span>
+                <span><strong className="text-text-dark">GIS Integration:</strong> Context from cadastral and geographic data to ground renovation decisions</span>
               </li>
               <li className="flex items-start">
                 <span className="text-accent mr-2">•</span>
-                <span><strong className="text-text-dark">AI Models:</strong> Risk-scoring and ROI calculation using advanced machine learning</span>
+                <span><strong className="text-text-dark">AI Models:</strong> Scenario comparison across cost, carbon, retention, and investment outcomes</span>
               </li>
               <li className="flex items-start">
                 <span className="text-accent mr-2">•</span>
-                <span><strong className="text-text-dark">Photogrammetry:</strong> 3D building scans for accurate damage detection and material analysis</span>
+                <span><strong className="text-text-dark">Photogrammetry:</strong> 3D building scans for condition assessment and material analysis</span>
               </li>
             </ul>
           </div>
@@ -118,5 +119,3 @@ const Technology = () => {
 };
 
 export default Technology;
-
-

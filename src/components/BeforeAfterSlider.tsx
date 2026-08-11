@@ -63,7 +63,7 @@ const BeforeAfterSlider = () => {
           Transformation Impact
         </h2>
         <p className="text-center text-text-muted text-lg mb-12 max-w-2xl mx-auto">
-          See how data-driven decisions transform vacant buildings into valuable assets
+          See how data-driven decisions upgrade aging buildings while preserving structure and value
         </p>
 
         <div className="relative max-w-5xl mx-auto">

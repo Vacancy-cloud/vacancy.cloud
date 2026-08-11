@@ -28,7 +28,7 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
             />
           </svg>
           <p className="text-text-muted text-lg">Select a Building</p>
-          <p className="text-text-muted text-sm mt-2">Click on a marker to view details</p>
+          <p className="text-text-muted text-sm mt-2">Click a marker to review renovation and retention insights</p>
         </div>
       </div>
     );
@@ -137,7 +137,7 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
                   <p className="text-sm font-medium text-text-dark">{building.type}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-text-muted uppercase tracking-wide">Price</p>
+                  <p className="text-xs text-text-muted uppercase tracking-wide">Indicative value</p>
                   <p className="text-sm font-medium text-text-dark">{building.price}</p>
                 </div>
                 <div>
@@ -198,13 +198,13 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
 
             <ul className="space-y-3">
               {[
-                'ROI forecasting',
-                'Scenario generator',
-                'Photogrammetry-based damage detection',
-                'GIS layering',
-                'Material salvage estimation',
-                'CO₂ footprint calculation',
-                'Land-use optimization',
+                'Upgrade ROI forecasting',
+                'Renovation & retention scenarios',
+                'Photogrammetry-based condition assessment',
+                'GIS context for renovation decisions',
+                'Circular material reuse estimates',
+                'Operational & embodied CO₂ modeling',
+                'Green financing readiness signals',
               ].map((feature, index) => (
                 <li key={index} className="flex items-start">
                   <svg className="w-5 h-5 text-accent mr-3 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">

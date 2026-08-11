@@ -19,7 +19,7 @@ const MapboxMap = ({ buildings, selectedBuilding, onBuildingSelect }: MapboxMapP
     if (!mapContainer.current || map.current) return;
 
     // Set Mapbox access token
-    mapboxgl.accessToken = 'pk.eyJ1IjoidmNuY2NsZCIsImEiOiJjbWpoanVhZTExNHlqM2VxejNzZHQ1Y3k4In0.D57YgoihTpRwIh2YcC4dMw';
+    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
     // Initialize map
     map.current = new mapboxgl.Map({
@@ -192,7 +192,7 @@ const MapboxMap = ({ buildings, selectedBuilding, onBuildingSelect }: MapboxMapP
   }, [selectedBuilding, buildings]);
 
   return (
-    <div className="w-full h-full rounded-card overflow-hidden shadow-md" role="application" aria-label="Interactive map showing vacant buildings in Denmark">
+    <div className="w-full h-full rounded-card overflow-hidden shadow-md" role="application" aria-label="Interactive map of sample aging buildings for renovation decision support">
       <div ref={mapContainer} className="w-full h-full" aria-label="Map container" />
       <style>{`
         @keyframes bounce {

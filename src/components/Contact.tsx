@@ -130,7 +130,7 @@ const Contact = ({ building = null, carbonAnalysis = null }: ContactProps = {}) 
           Get in Touch
         </h2>
         <p className="text-center text-text-muted text-lg mb-12">
-          Have questions or want to learn more? We'd love to hear from you.
+          Talk with us about decision support for energy renovation, retention, and green financing.
         </p>
 
         {isSubmitted ? (

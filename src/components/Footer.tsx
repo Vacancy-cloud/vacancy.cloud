@@ -25,7 +25,7 @@ const Footer = () => {
               <span className="text-2xl font-bold text-gray-300">Vacancy.Cloud</span>
             </button>
             <p className="text-gray-400 text-sm">
-              AI-Platform for managing Vacant and Underutilized Buildings in Denmark
+              B2B decision-support for energy renovation, structural retention, and green financing of aging buildings
             </p>
           </div>
 
