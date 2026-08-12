@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Building } from '../types';
 
@@ -6,16 +5,22 @@ interface BuildingCardProps {
   building: Building | null;
 }
 
+const MATERIAL_LABELS: Record<string, string> = {
+  brick: 'Masonry',
+  concrete: 'Concrete',
+  wood: 'Wood',
+  other: 'Other',
+};
+
 const BuildingCard = ({ building }: BuildingCardProps) => {
-  const [activeTab, setActiveTab] = useState<'info' | 'analytics'>('info');
   const navigate = useNavigate();
 
   if (!building) {
     return (
-      <div className="h-full flex items-center justify-center p-8 bg-white rounded-card shadow-md">
-        <div className="text-center">
+      <div className="h-full flex items-center justify-center p-8 bg-white rounded-card shadow-md border border-gray-100">
+        <div className="text-center max-w-xs">
           <svg
-            className="w-16 h-16 mx-auto text-text-muted mb-4"
+            className="w-14 h-14 mx-auto text-text-muted mb-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -27,199 +32,235 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
               d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
             />
           </svg>
-          <p className="text-text-muted text-lg">Select a Building</p>
-          <p className="text-text-muted text-sm mt-2">Click a marker to review renovation and retention insights</p>
+          <p className="text-text-dark font-semibold text-lg">Select a building</p>
+          <p className="text-text-muted text-sm mt-2">
+            Click a map marker to open an Upgrade &amp; Reuse Assessment
+          </p>
         </div>
       </div>
     );
   }
 
+  const esg = building.esgData;
+  const currentClass = esg?.energyClass ?? null;
+  const targetClass = esg?.renovationToEnergyClassB ? 'B' : null;
+  const breakdown = esg?.materialBreakdown;
+
+  const retainInSitu: string[] = [];
+  const reuseExSitu: string[] = [];
+
+  if (breakdown) {
+    (Object.entries(breakdown) as [string, string][]).forEach(([key, value]) => {
+      const label = MATERIAL_LABELS[key] ?? key;
+      const lower = value.toLowerCase();
+      // High in-place reuse / masonry typically retained; recyclable/removed materials → ex-situ
+      if (key === 'brick' || lower.includes('high reuse') || lower.includes('høj genbrug')) {
+        retainInSitu.push(`${label} — ${value}`);
+      } else if (key !== 'other') {
+        reuseExSitu.push(`${label} — ${value}`);
+      }
+    });
+  }
+
+  const structureCategories = breakdown
+    ? (Object.keys(breakdown) as string[])
+        .filter((key) => key !== 'other' && breakdown[key as keyof typeof breakdown])
+        .map((key) => MATERIAL_LABELS[key] ?? key)
+    : [];
+
   return (
-    <div className="h-full flex flex-col bg-white rounded-card shadow-md overflow-hidden">
-      {/* Header with View Details Button */}
-      {building && (
-        <div className="p-4 border-b border-gray-200 bg-primary/5">
-          <button
-            onClick={() => navigate(`/building/${building.id}`)}
-            className="w-full px-4 py-2 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center"
-          >
-            <span>View Full Details</span>
-            <svg className="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+    <div className="h-full flex flex-col bg-white rounded-card shadow-md overflow-hidden border border-gray-100">
+      {/* Building identity */}
+      <div className="shrink-0 p-4 border-b border-gray-200 bg-background/80">
+        <div className="flex gap-3 items-start">
+          {building.image && (
+            <img
+              src={building.image}
+              alt=""
+              className="w-14 h-14 rounded-lg object-cover border border-gray-200 shrink-0"
+            />
+          )}
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-0.5">
+              Upgrade &amp; Reuse Assessment
+            </p>
+            <h2 className="text-base font-bold text-text-dark truncate">{building.name}</h2>
+            <p className="text-xs text-text-muted truncate">{building.address}</p>
+          </div>
         </div>
-      )}
-      
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200">
-        <button
-          id="building-info-tab"
-          onClick={() => setActiveTab('info')}
-          className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-            activeTab === 'info'
-              ? 'text-primary border-b-2 border-primary bg-primary/5'
-              : 'text-text-muted hover:text-primary hover:bg-gray-50'
-          }`}
-          aria-selected={activeTab === 'info'}
-          aria-controls="building-info-panel"
-          role="tab"
-        >
-          Building Info
-        </button>
-        <button
-          id="ai-analytics-tab"
-          onClick={() => setActiveTab('analytics')}
-          className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-            activeTab === 'analytics'
-              ? 'text-primary border-b-2 border-primary bg-primary/5'
-              : 'text-text-muted hover:text-primary hover:bg-gray-50'
-          }`}
-          aria-selected={activeTab === 'analytics'}
-          aria-controls="ai-analytics-panel"
-          role="tab"
-        >
-          AI Analytics
-        </button>
       </div>
 
-      {/* Tab Content */}
-      <div className="flex-1 overflow-y-auto p-6">
-        {activeTab === 'info' ? (
-          <div id="building-info-panel" role="tabpanel" aria-labelledby="building-info-tab" className="space-y-6">
-            {/* Building Name */}
-            <h2 className="text-2xl font-bold text-text-dark">{building.name}</h2>
-
-            {/* Address */}
-            <div className="flex items-start text-text-muted">
-              <svg className="w-5 h-5 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              <span>{building.address}</span>
-            </div>
-
-            {/* Image placeholder and Quick Info */}
-            <div className="grid grid-cols-2 gap-4">
-              <div 
-                className="bg-gray-200 rounded-lg aspect-square overflow-hidden flex items-center justify-center"
-                role="img"
-                aria-label={`Building image for ${building.name}`}
-              >
-                {building.image ? (
-                  <img
-                    src={building.image}
-                    alt={building.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      // Show placeholder SVG on error
-                      target.style.display = 'none';
-                      const parent = target.parentElement;
-                      if (parent) {
-                        parent.innerHTML = `
-                          <svg class="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                        `;
-                      }
-                    }}
-                  />
-                ) : (
-                  <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                )}
-              </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-text-muted uppercase tracking-wide">Type</p>
-                  <p className="text-sm font-medium text-text-dark">{building.type}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-text-muted uppercase tracking-wide">Indicative value</p>
-                  <p className="text-sm font-medium text-text-dark">{building.price}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-text-muted uppercase tracking-wide">Size</p>
-                  <p className="text-sm font-medium text-text-dark">
-                    {building.size.floorArea || building.size.commercialArea || building.size.builtArea || 'N/A'}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Detailed Grid */}
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
-              <div>
-                <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Floors</p>
-                <p className="text-sm text-text-dark">{building.floors}</p>
-              </div>
-              <div>
-                <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Material</p>
-                <p className="text-sm text-text-dark">{building.material}</p>
-              </div>
-              <div>
-                <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Owner</p>
-                <p className="text-sm text-text-dark">{building.owner}</p>
-              </div>
-              <div>
-                <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Year</p>
-                <p className="text-sm text-text-dark">{building.year}</p>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="pt-4 border-t border-gray-200">
-              <p className="text-sm text-text-muted leading-relaxed">{building.description}</p>
-            </div>
-
-            {/* Click to view details hint */}
-            <div className="pt-4 border-t border-gray-200 mt-4">
-              <button
-                onClick={() => navigate(`/building/${building.id}`)}
-                className="w-full text-sm text-primary hover:text-primary/80 font-medium flex items-center justify-center transition-colors"
-              >
-                <span>View full building details</span>
-                <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div id="ai-analytics-panel" role="tabpanel" aria-labelledby="ai-analytics-tab" className="space-y-6">
-            <div>
-              <h3 className="text-xl font-bold text-text-dark mb-2">AI-powered Analytics</h3>
-              <span className="inline-block px-3 py-1 bg-accent/20 text-accent text-xs font-semibold rounded-full">
-                Coming soon
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {/* 1. ENERGY PATHWAY — most prominent */}
+        <section className="rounded-card border border-primary/20 bg-primary/5 p-4">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-3">
+            Energy pathway
+          </p>
+          {currentClass && targetClass ? (
+            <div className="flex items-center justify-center gap-4 mb-3">
+              <span className="flex h-14 w-14 items-center justify-center rounded-lg border border-gray-200 bg-white text-2xl font-bold text-text-muted">
+                {currentClass}
+              </span>
+              <span className="text-primary text-xl font-bold" aria-hidden="true">
+                →
+              </span>
+              <span className="flex h-14 w-14 items-center justify-center rounded-lg border border-accent/40 bg-accent/15 text-2xl font-bold text-text-dark">
+                {targetClass}
               </span>
             </div>
+          ) : (
+            <p className="text-sm text-text-muted mb-3 text-center">Available after assessment</p>
+          )}
+          <p className="text-sm font-semibold text-text-dark text-center mb-1">Upgrade potential</p>
+          <p className="text-xs text-text-muted text-center leading-relaxed">
+            Indicative pathway based on building characteristics, energy data and upgrade scenarios.
+          </p>
+        </section>
 
-            <ul className="space-y-3">
-              {[
-                'Upgrade ROI forecasting',
-                'Renovation & retention scenarios',
-                'Photogrammetry-based condition assessment',
-                'GIS context for renovation decisions',
-                'Circular material reuse estimates',
-                'Operational & embodied CO₂ modeling',
-                'Green financing readiness signals',
-              ].map((feature, index) => (
-                <li key={index} className="flex items-start">
-                  <svg className="w-5 h-5 text-accent mr-3 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span className="text-sm text-text-dark">{feature}</span>
-                </li>
+        {/* 2. STRUCTURE TO RETAIN */}
+        <section className="rounded-card border border-gray-200 bg-white p-4">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-3">
+            Structure to retain
+          </p>
+          <p className="text-3xl font-bold text-text-dark mb-1">
+            Available after assessment
+          </p>
+          <p className="text-sm font-medium text-text-dark mb-3">
+            Existing structure potentially retained
+          </p>
+          {structureCategories.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {structureCategories.map((category) => (
+                <span
+                  key={category}
+                  className="inline-flex rounded-full border border-gray-200 bg-background px-2.5 py-1 text-xs font-medium text-text-dark"
+                >
+                  {category}
+                </span>
               ))}
-            </ul>
+            </div>
+          ) : (
+            <p className="text-xs text-text-muted">Retention categories available after assessment</p>
+          )}
+          <p className="text-[11px] text-text-muted mt-3 leading-relaxed">
+            Indicative retention potential — not an engineering certification.
+          </p>
+        </section>
+
+        {/* 3. CARBON IMPACT */}
+        <section className="rounded-card border border-gray-200 bg-white p-4">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-2">
+            Carbon impact
+          </p>
+          <p className="text-sm font-semibold text-text-dark mb-1">LCA comparison</p>
+          <p className="text-xs text-text-muted mb-3">
+            Reuse scenario vs. demolition + new build
+          </p>
+          <div className="rounded-lg border border-dashed border-gray-200 bg-background px-3 py-2">
+            <p className="text-xs font-medium text-text-muted">
+              Calculation available after assessment
+            </p>
           </div>
-        )}
+          {esg?.potentialCO2Reduction && (
+            <p className="text-[11px] text-text-muted mt-2">
+              Dataset note: {esg.potentialCO2Reduction}
+            </p>
+          )}
+        </section>
+
+        {/* 4. FINANCING READINESS */}
+        <section className="rounded-card border border-gray-200 bg-white p-4">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-2">
+            Financing readiness
+          </p>
+          <h3 className="text-sm font-semibold text-text-dark mb-3">Green financing pathway</h3>
+          <div className="flex flex-wrap items-center gap-1.5 text-xs mb-3">
+            <span className="rounded-full bg-primary/10 text-primary px-2.5 py-1 font-medium">
+              Screening
+            </span>
+            <span className="text-text-muted" aria-hidden="true">
+              →
+            </span>
+            <span className="rounded-full bg-primary/10 text-primary px-2.5 py-1 font-medium">
+              Verification
+            </span>
+            <span className="text-text-muted" aria-hidden="true">
+              →
+            </span>
+            <span className="rounded-full bg-accent/20 text-text-dark px-2.5 py-1 font-medium">
+              Financing documentation
+            </span>
+          </div>
+          <p className="text-xs text-text-muted leading-relaxed">
+            Structures upgrade data for certified verification and green financing assessment.
+          </p>
+        </section>
+
+        {/* Circular Material Potential */}
+        <section
+          id="circular-material-potential"
+          className="rounded-card border border-gray-200 bg-white p-4"
+        >
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-3">
+            Circular Material Potential
+          </p>
+
+          <div className="space-y-3 mb-4">
+            <div>
+              <p className="text-xs font-semibold text-text-dark mb-1.5">Retain in-situ</p>
+              {retainInSitu.length > 0 ? (
+                <ul className="space-y-1">
+                  {retainInSitu.map((item) => (
+                    <li key={item} className="text-xs text-text-muted leading-relaxed">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-xs text-text-muted">Available after assessment</p>
+              )}
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-text-dark mb-1.5">Reuse ex-situ</p>
+              {reuseExSitu.length > 0 ? (
+                <ul className="space-y-1">
+                  {reuseExSitu.map((item) => (
+                    <li key={item} className="text-xs text-text-muted leading-relaxed">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-xs text-text-muted">Available after assessment</p>
+              )}
+            </div>
+          </div>
+
+          {esg?.reusableMaterialsValue && (
+            <p className="text-[11px] text-text-muted mb-3">
+              Dataset note: {esg.reusableMaterialsValue}
+            </p>
+          )}
+
+          <button
+            type="button"
+            onClick={() => navigate(`/building/${building.id}`)}
+            className="text-xs font-semibold text-primary hover:text-primary/80 transition-colors"
+          >
+            View material potential
+          </button>
+        </section>
+
+        <button
+          type="button"
+          onClick={() => navigate(`/building/${building.id}`)}
+          className="w-full px-4 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors"
+        >
+          View full building details
+        </button>
       </div>
     </div>
   );
 };
 
 export default BuildingCard;
-

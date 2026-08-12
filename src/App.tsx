@@ -5,9 +5,14 @@ import Hero from './components/Hero';
 import HowItWorks from './components/HowItWorks';
 import BeforeAfterSlider from './components/BeforeAfterSlider';
 import InteractiveDemo from './components/InteractiveDemo';
+import DecisionLayer from './components/DecisionLayer';
 import Technology from './components/Technology';
+import RetainBeforeDemolish from './components/RetainBeforeDemolish';
+import SelectiveDismantling from './components/SelectiveDismantling';
+import RenovationValueChain from './components/RenovationValueChain';
 import Team from './components/Team';
 import Contact from './components/Contact';
+import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
 import BuildingDetail from './pages/BuildingDetail';
 import { smoothScrollTo } from './utils/smoothScroll';
@@ -32,9 +37,14 @@ const HomePage = () => {
         <HowItWorks />
         <BeforeAfterSlider />
         <InteractiveDemo />
+        <DecisionLayer />
         <Technology />
+        <RetainBeforeDemolish />
+        <SelectiveDismantling />
+        <RenovationValueChain />
         <Team />
         <Contact />
+        <FinalCTA />
       </main>
       <Footer />
     </div>
