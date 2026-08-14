@@ -44,10 +44,10 @@ const HowItWorks = () => {
       <div id="workflow" className="absolute top-0" aria-hidden="true" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-text-dark mb-4">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-left text-text-dark mb-4">
           How Vacancy.Cloud works
         </h2>
-        <p className="text-center text-text-muted text-lg mb-12 max-w-2xl mx-auto">
+        <p className="text-left text-text-muted text-lg mb-12 max-w-2xl">
           From existing building data to a verified renovation and financing pathway.
         </p>
 
