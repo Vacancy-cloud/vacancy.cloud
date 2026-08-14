@@ -10,7 +10,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-text-dark text-white py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10 mb-10">
           <div className="max-w-sm">
             <button

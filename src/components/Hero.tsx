@@ -10,8 +10,8 @@ const Hero = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/5 to-transparent" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(48,122,225,0.1),transparent_50%)]" />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 text-left">
-        <div className="max-w-3xl">
+      <div className="relative z-10 w-full max-w-site mx-auto px-4 sm:px-6 lg:px-12 xl:px-16 py-16 sm:py-20 lg:py-24 text-left">
+        <div className="max-w-4xl">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-text-dark mb-6 leading-[1.1] tracking-tight">
             Upgrade aging buildings.
             <br />
@@ -34,7 +34,7 @@ const Hero = () => {
 
         {/* Transformation block */}
         <div className="mt-16 sm:mt-20 lg:mt-24">
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 md:gap-8 mb-10">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 md:gap-10 mb-10">
             <span className="text-3xl sm:text-4xl md:text-5xl font-semibold text-text-muted">
               F / G
             </span>
@@ -53,7 +53,7 @@ const Hero = () => {
           </div>
 
           {/* Value indicators */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-3xl">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-4xl">
             <div className="flex items-start gap-3">
               <svg
                 className="w-5 h-5 mt-0.5 text-primary shrink-0"

@@ -3,7 +3,7 @@ import { smoothScrollTo } from '../utils/smoothScroll';
 const FinalCTA = () => {
   return (
     <section id="final-cta" className="py-24 sm:py-32 bg-background">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
         <p className="text-xs font-semibold uppercase tracking-wider text-primary mb-6 text-center">
           From building risk to upgrade potential
         </p>

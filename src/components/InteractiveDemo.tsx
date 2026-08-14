@@ -11,7 +11,7 @@ const InteractiveDemo = () => {
 
   return (
     <section id="demo" className="py-20 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
         <p className="text-center text-xs sm:text-sm font-semibold uppercase tracking-wider text-primary mb-3">
           Live Building Assessment
         </p>

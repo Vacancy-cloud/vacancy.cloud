@@ -1,7 +1,7 @@
 const SelectiveDismantling = () => {
   return (
     <section id="selective-dismantling" className="py-14 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
         <p className="text-center text-xs font-semibold uppercase tracking-wider text-primary mb-3">
           When retention is not enough
         </p>

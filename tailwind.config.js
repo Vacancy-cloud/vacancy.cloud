@@ -21,6 +21,9 @@ export default {
       borderRadius: {
         'card': '12px',
       },
+      maxWidth: {
+        site: '1480px',
+      },
     },
   },
   plugins: [],
