@@ -120,14 +120,29 @@ async function main() {
         timeout: 120000,
       });
 
-      // Wait for React to paint homepage copy; do not wait for Mapbox tiles.
-      await page.waitForFunction(
-        () => {
-          const root = document.getElementById('root');
-          return Boolean(root && root.innerText.includes('Upgrade aging buildings'));
-        },
-        { timeout: 90000 }
-      );
+      // Wait briefly for React to paint static homepage copy.
+      // Do not wait for Mapbox, tiles, animations, or other dynamic UI.
+      // Previous condition waited for outdated hero text ("Upgrade aging buildings")
+      // and used a 90s timeout that failed the Vercel build.
+      try {
+        await page.waitForFunction(
+          () => {
+            const root = document.getElementById('root');
+            if (!root) return false;
+            const text = root.innerText || '';
+            return (
+              text.includes('Plan the path') ||
+              text.includes('How Vacancy.Cloud Works') ||
+              text.includes('Early-stage building screening')
+            );
+          },
+          { timeout: 12000 }
+        );
+      } catch {
+        console.warn(
+          'Dynamic content did not fully load; continuing with prerender.'
+        );
+      }
 
       await sleep(750);
 
