@@ -1,6 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 
-const BeforeAfterSlider = () => {
+type BeforeAfterSliderProps = {
+  /** Compact slider for hero / embed contexts (no section chrome) */
+  embedded?: boolean;
+  className?: string;
+};
+
+const Slider = ({ embedded = false, className = '' }: BeforeAfterSliderProps) => {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,79 +63,91 @@ const BeforeAfterSlider = () => {
   }, [isDragging]);
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-text-dark mb-4">
+    <div
+      ref={containerRef}
+      className={`relative w-full overflow-hidden shadow-lg ${
+        embedded
+          ? `h-full min-h-[260px] sm:min-h-[320px] rounded-xl ${className}`
+          : `aspect-video rounded-card ${className}`
+      }`}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleMouseDown}
+      role="img"
+      aria-label="Before and after building comparison. Drag to compare."
+    >
+      {/* After (renovated) — full background, visible on the right */}
+      <div className="absolute inset-0">
+        <img
+          src="/images/before-after/after.png"
+          alt="After renovation"
+          className="h-full w-full object-cover"
+          draggable={false}
+        />
+      </div>
+
+      {/* Before (existing) — clipped to the left of the handle */}
+      <div
+        className="absolute inset-0 overflow-hidden"
+        style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
+      >
+        <img
+          src="/images/before-after/before.png"
+          alt="Before renovation"
+          className="h-full w-full object-cover"
+          draggable={false}
+        />
+      </div>
+
+      <div
+        className="absolute top-0 bottom-0 z-10 w-0.5 cursor-grab bg-white shadow-md active:cursor-grabbing"
+        style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
+      >
+        <div className="absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-primary bg-white shadow-lg sm:h-12 sm:w-12 sm:border-4">
+          <svg
+            className="h-5 w-5 text-primary sm:h-6 sm:w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 9l4-4 4 4m0 6l-4 4-4-4"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <div className="absolute left-3 top-3 rounded-md bg-black/70 px-3 py-1.5 text-xs font-semibold text-white sm:left-4 sm:top-4 sm:px-4 sm:py-2 sm:text-sm">
+        Before
+      </div>
+      <div className="absolute right-3 top-3 rounded-md bg-black/70 px-3 py-1.5 text-xs font-semibold text-white sm:right-4 sm:top-4 sm:px-4 sm:py-2 sm:text-sm">
+        After
+      </div>
+    </div>
+  );
+};
+
+const BeforeAfterSlider = ({ embedded = false, className = '' }: BeforeAfterSliderProps) => {
+  if (embedded) {
+    return <Slider embedded className={className} />;
+  }
+
+  return (
+    <section className="bg-white py-20">
+      <div className="mx-auto max-w-site px-4 sm:px-6 lg:px-12 xl:px-16">
+        <h2 className="mb-4 text-center text-3xl font-bold text-text-dark sm:text-4xl md:text-5xl">
           Transformation Impact
         </h2>
-        <p className="text-center text-text-muted text-lg mb-12 max-w-2xl mx-auto">
+        <p className="mx-auto mb-12 max-w-2xl text-center text-lg text-text-muted">
           See how data-driven decisions upgrade aging buildings while preserving structure and value
         </p>
 
-        <div className="relative max-w-5xl mx-auto">
-          <div
-            ref={containerRef}
-            className="relative w-full aspect-video rounded-card overflow-hidden shadow-lg"
-            onMouseDown={handleMouseDown}
-            onTouchStart={handleMouseDown}
-          >
-            {/* Before Image (Background) */}
-            <div className="absolute inset-0">
-              <img
-                src="/images/before-after/before.png"
-                alt="Before transformation"
-                className="w-full h-full object-cover"
-                draggable={false}
-              />
-            </div>
-
-            {/* After Image (Clipped) */}
-            <div
-              className="absolute inset-0 overflow-hidden"
-              style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
-            >
-              <img
-                src="/images/before-after/after.png"
-                alt="After transformation"
-                className="w-full h-full object-cover"
-                draggable={false}
-              />
-            </div>
-
-            {/* Slider Line */}
-            <div
-              className="absolute top-0 bottom-0 w-1 bg-white shadow-lg z-10 cursor-grab active:cursor-grabbing"
-              style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
-            >
-              {/* Slider Handle */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center border-4 border-primary">
-                <svg
-                  className="w-6 h-6 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                  />
-                </svg>
-              </div>
-            </div>
-
-            {/* Labels */}
-            <div className="absolute top-4 left-4 bg-black/70 text-white px-4 py-2 rounded-lg font-semibold">
-              Before
-            </div>
-            <div className="absolute top-4 right-4 bg-black/70 text-white px-4 py-2 rounded-lg font-semibold">
-              After
-            </div>
-          </div>
-
-          {/* Instructions */}
-          <p className="text-center text-text-muted text-sm mt-4">
+        <div className="relative mx-auto max-w-5xl">
+          <Slider className={className} />
+          <p className="mt-4 text-center text-sm text-text-muted">
             Drag the slider to compare before and after
           </p>
         </div>
@@ -139,4 +157,3 @@ const BeforeAfterSlider = () => {
 };
 
 export default BeforeAfterSlider;
-

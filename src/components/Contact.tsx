@@ -130,7 +130,7 @@ const Contact = ({ building = null, carbonAnalysis = null }: ContactProps = {}) 
           Get in Touch
         </h2>
         <p className="text-center text-text-muted text-lg mb-12">
-          Talk with us about decision support for energy renovation, retention, and green financing.
+          Talk with us about early-stage renovation assessment, building screening and potential pilot cases.
         </p>
 
         {isSubmitted ? (

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vacancy-cloud.vercel.app/sitemap.xml

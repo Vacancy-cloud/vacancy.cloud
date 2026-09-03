@@ -29,7 +29,7 @@ const ReportModal = ({ building, onClose }: ReportModalProps) => {
     e.preventDefault();
     console.log('Email submitted:', email);
     // In a real app, this would send to a backend
-    alert('Thank you! We\'ll notify you when full AI-powered reports are available.');
+    alert('Thank you! We\'ll notify you when early-stage assessment reports are available.');
     setEmail('');
     onClose();
   };
@@ -55,10 +55,10 @@ const ReportModal = ({ building, onClose }: ReportModalProps) => {
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
           <div>
             <h2 className="text-2xl font-bold text-text-dark">
-              {building ? `${building.name} - Full Analysis Report` : 'Full Analysis Report'}
+              {building ? `${building.name} - Assessment Report` : 'Assessment Report'}
             </h2>
             <span className="inline-block mt-2 px-3 py-1 bg-accent/20 text-accent text-xs font-semibold rounded-full">
-              Demo Preview - Full AI-powered reports coming soon
+              Demo Preview - Early-stage assessment report coming soon
             </span>
           </div>
           <button

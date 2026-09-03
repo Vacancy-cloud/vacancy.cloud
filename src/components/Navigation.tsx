@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { smoothScrollTo } from '../utils/smoothScroll';
+
+type NavItem =
+  | { kind: 'section'; id: string; label: string }
+  | { kind: 'route'; path: string; label: string };
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -9,13 +13,15 @@ const Navigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
+  const isTeamPage = location.pathname === '/team';
+  const isContactPage = location.pathname === '/contact';
 
   useEffect(() => {
     // Only track scroll on homepage
     if (!isHomePage) return;
 
     const handleScroll = () => {
-      const sections = ['hero', 'how-it-works', 'demo', 'technology', 'team', 'contact'];
+      const sections = ['hero', 'how-it-works', 'demo'];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -34,44 +40,57 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [isHomePage]);
 
-  const handleNavClick = (sectionId: string) => {
+  const handleSectionClick = (sectionId: string) => {
     setIsMenuOpen(false);
-    
+
     if (isHomePage) {
-      // On homepage, just scroll to section
       smoothScrollTo(sectionId);
     } else {
-      // On BuildingDetail page, navigate to homepage with hash, then scroll
       navigate(`/#${sectionId}`, { replace: false });
-      // Use setTimeout to ensure navigation completes before scrolling
       setTimeout(() => {
         smoothScrollTo(sectionId);
       }, 100);
     }
   };
 
-  const navLinks = [
-    { id: 'how-it-works', label: 'How It Works' },
-    { id: 'demo', label: 'Demo' },
-    { id: 'technology', label: 'Technology' },
-    { id: 'team', label: 'Team' },
-    { id: 'contact', label: 'Contact' },
+  const navLinks: NavItem[] = [
+    { kind: 'section', id: 'how-it-works', label: 'How It Works' },
+    { kind: 'section', id: 'demo', label: 'Demo' },
+    { kind: 'route', path: '/team', label: 'Team' },
+    { kind: 'route', path: '/contact', label: 'Contact' },
   ];
 
+  const isRouteActive = (path: string) =>
+    path === '/team' ? isTeamPage : path === '/contact' ? isContactPage : false;
+
+  const linkClass = (active: boolean, mobile = false) =>
+    mobile
+      ? `block w-full px-3 py-2 text-left text-base font-medium transition-colors ${
+          active
+            ? 'bg-primary/10 text-primary'
+            : 'text-text-muted hover:bg-gray-50 hover:text-primary'
+        }`
+      : `px-3 py-2 text-sm font-medium transition-colors ${
+          active
+            ? 'border-b-2 border-primary text-primary'
+            : 'text-text-muted hover:text-primary'
+        }`;
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm">
-      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
-        <div className="flex justify-between items-center h-16">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 shadow-sm backdrop-blur-sm">
+      <div className="mx-auto max-w-site px-4 sm:px-6 lg:px-12 xl:px-16">
+        <div className="flex h-16 items-center justify-between">
           <div className="flex-shrink-0">
             <button
+              type="button"
               onClick={() => {
                 if (isHomePage) {
-                  handleNavClick('hero');
+                  handleSectionClick('hero');
                 } else {
                   navigate('/');
                 }
               }}
-              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+              className="flex items-center space-x-3 transition-opacity hover:opacity-80"
               aria-label="Go to homepage"
             >
               {!logoError && (
@@ -86,37 +105,39 @@ const Navigation = () => {
             </button>
           </div>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex md:space-x-8">
-            {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => handleNavClick(link.id)}
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                  activeSection === link.id
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-text-muted hover:text-primary'
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
+            {navLinks.map((link) =>
+              link.kind === 'route' ? (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={linkClass(isRouteActive(link.path))}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <button
+                  key={link.id}
+                  type="button"
+                  onClick={() => handleSectionClick(link.id)}
+                  className={linkClass(activeSection === link.id)}
+                >
+                  {link.label}
+                </button>
+              )
+            )}
           </div>
 
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <button
+              type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-text-muted hover:text-primary hover:bg-gray-100 focus:outline-none"
+              className="inline-flex items-center justify-center rounded-md p-2 text-text-muted hover:bg-gray-100 hover:text-primary focus:outline-none"
               aria-label="Toggle menu"
               aria-expanded={isMenuOpen}
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isMenuOpen ? (
                   <path
                     strokeLinecap="round"
@@ -138,23 +159,30 @@ const Navigation = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
-            {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => handleNavClick(link.id)}
-                className={`block px-3 py-2 text-base font-medium w-full text-left transition-colors ${
-                  activeSection === link.id
-                    ? 'text-primary bg-primary/10'
-                    : 'text-text-muted hover:text-primary hover:bg-gray-50'
-                }`}
-              >
-                {link.label}
-              </button>
-            ))}
+          <div className="space-y-1 border-t bg-white px-2 pb-3 pt-2">
+            {navLinks.map((link) =>
+              link.kind === 'route' ? (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={linkClass(isRouteActive(link.path), true)}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <button
+                  key={link.id}
+                  type="button"
+                  onClick={() => handleSectionClick(link.id)}
+                  className={linkClass(activeSection === link.id, true)}
+                >
+                  {link.label}
+                </button>
+              )
+            )}
           </div>
         </div>
       )}
@@ -163,4 +191,3 @@ const Navigation = () => {
 };
 
 export default Navigation;
-

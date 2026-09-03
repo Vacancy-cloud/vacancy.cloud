@@ -17,7 +17,7 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
 
   if (!building) {
     return (
-      <div className="h-full flex items-center justify-center p-8 bg-white rounded-card shadow-md border border-gray-100">
+      <div className="h-full flex items-center justify-center p-8 bg-white border border-gray-100 lg:border-0">
         <div className="text-center max-w-xs">
           <svg
             className="w-14 h-14 mx-auto text-text-muted mb-4"
@@ -34,7 +34,7 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
           </svg>
           <p className="text-text-dark font-semibold text-lg">Select a building</p>
           <p className="text-text-muted text-sm mt-2">
-            Click a map marker to open an Upgrade &amp; Reuse Assessment
+            Click a map marker to open an early-stage building assessment
           </p>
         </div>
       </div>
@@ -69,7 +69,7 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
     : [];
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-card shadow-md overflow-hidden border border-gray-100">
+    <div className="h-full flex flex-col bg-white overflow-hidden">
       {/* Building identity */}
       <div className="shrink-0 p-4 border-b border-gray-200 bg-background/80">
         <div className="flex gap-3 items-start">
@@ -82,7 +82,7 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
           )}
           <div className="min-w-0 flex-1">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-0.5">
-              Upgrade &amp; Reuse Assessment
+              Early-stage Building Assessment
             </p>
             <h2 className="text-base font-bold text-text-dark truncate">{building.name}</h2>
             <p className="text-xs text-text-muted truncate">{building.address}</p>
@@ -94,7 +94,7 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
         {/* 1. ENERGY PATHWAY — most prominent */}
         <section className="rounded-card border border-primary/20 bg-primary/5 p-4">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-3">
-            Energy pathway
+            Energy Performance
           </p>
           {currentClass && targetClass ? (
             <div className="flex items-center justify-center gap-4 mb-3">
@@ -113,14 +113,14 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
           )}
           <p className="text-sm font-semibold text-text-dark text-center mb-1">Upgrade potential</p>
           <p className="text-xs text-text-muted text-center leading-relaxed">
-            Indicative pathway based on building characteristics, energy data and upgrade scenarios.
+            Indicative upgrade potential based on available building and energy data.
           </p>
         </section>
 
         {/* 2. STRUCTURE TO RETAIN */}
         <section className="rounded-card border border-gray-200 bg-white p-4">
           <p className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-3">
-            Structure to retain
+            Structural Indicators
           </p>
           <p className="text-3xl font-bold text-text-dark mb-1">
             Available after assessment
@@ -192,7 +192,7 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
             </span>
           </div>
           <p className="text-xs text-text-muted leading-relaxed">
-            Structures upgrade data for certified verification and green financing assessment.
+            Structures upgrade data for early-stage screening and later professional verification.
           </p>
         </section>
 
@@ -202,7 +202,7 @@ const BuildingCard = ({ building }: BuildingCardProps) => {
           className="rounded-card border border-gray-200 bg-white p-4"
         >
           <p className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-3">
-            Circular Material Potential
+            Retention &amp; Reuse Screening
           </p>
 
           <div className="space-y-3 mb-4">

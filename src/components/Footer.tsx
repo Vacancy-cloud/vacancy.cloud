@@ -1,50 +1,60 @@
+import { Link } from 'react-router-dom';
 import { smoothScrollTo } from '../utils/smoothScroll';
 
 const Footer = () => {
-  const navLinks = [
-    { id: 'how-it-works', label: 'How it works' },
-    { id: 'demo', label: 'Demo' },
-    { id: 'renovation-value-chain', label: "Who it's for" },
-    { id: 'team', label: 'About' },
-  ];
-
   return (
-    <footer className="bg-text-dark text-white py-12">
-      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10 mb-10">
+    <footer className="bg-text-dark py-12 text-white">
+      <div className="mx-auto max-w-site px-4 sm:px-6 lg:px-12 xl:px-16">
+        <div className="mb-10 flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="max-w-sm">
             <button
+              type="button"
               onClick={() => smoothScrollTo('hero')}
-              className="text-xl font-bold text-gray-200 hover:opacity-80 transition-opacity mb-3"
+              className="mb-3 text-xl font-bold text-gray-200 transition-opacity hover:opacity-80"
               aria-label="Go to top"
             >
               Vacancy.Cloud
             </button>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Decision intelligence for upgrading existing buildings.
+            <p className="text-sm leading-relaxed text-gray-400">
+              Early-stage decision support for upgrading existing buildings.
             </p>
           </div>
 
           <nav aria-label="Footer">
-            <ul className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-6">
-              {navLinks.map((link) => (
-                <li key={link.id}>
-                  <button
-                    type="button"
-                    onClick={() => smoothScrollTo(link.id)}
-                    className="text-sm text-gray-400 hover:text-accent transition-colors"
-                  >
-                    {link.label}
-                  </button>
-                </li>
-              ))}
+            <ul className="flex flex-col flex-wrap gap-3 sm:flex-row sm:gap-6">
+              <li>
+                <button
+                  type="button"
+                  onClick={() => smoothScrollTo('how-it-works')}
+                  className="text-sm text-gray-400 transition-colors hover:text-accent"
+                >
+                  How it works
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => smoothScrollTo('demo')}
+                  className="text-sm text-gray-400 transition-colors hover:text-accent"
+                >
+                  Demo
+                </button>
+              </li>
+              <li>
+                <Link
+                  to="/team"
+                  className="text-sm text-gray-400 transition-colors hover:text-accent"
+                >
+                  Team
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>
 
-        <div className="border-t border-gray-700 pt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <p className="text-gray-500 text-sm">Copenhagen, Denmark</p>
-          <p className="text-gray-500 text-sm">© 2026 Vacancy.Cloud</p>
+        <div className="flex flex-col gap-3 border-t border-gray-700 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-gray-500">Copenhagen, Denmark</p>
+          <p className="text-sm text-gray-500">© 2026 Vacancy.Cloud</p>
         </div>
       </div>
     </footer>

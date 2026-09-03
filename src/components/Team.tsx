@@ -8,81 +8,81 @@ const Team = () => {
       name: 'Iaroslava Komissarova',
       role: 'Co-founder',
       title: 'Architect • Independent researcher • Cand. Arch MAA',
-      bio: 'Co-founder @ Vacancy.Cloud • Independent researcher • Cand. Arch MAA',
+      bio: 'Architecture, real estate development, renovation strategy and regulatory processes.',
       photo: '/images/founders/Yasya.jpg',
       initials: 'IK',
     },
     {
-      name: 'Haya Ghaleb Termanini',
-      role: 'Co-Founder',
+      name: 'Haya Termanini',
+      role: 'Co-founder',
       title: 'Constructing Architect • BIM/ICT Leader • Storyteller',
-      bio: 'Co-Founder @ Vacancy.Cloud • BIM/ICT Leader • Storyteller • Board member @ Building Diversity',
+      bio: 'BIM, building transformation, material reuse, data workflows and digital construction.',
       photo: '/images/founders/Haya.jpg',
-      initials: 'HGT',
+      initials: 'HT',
     },
   ];
 
   return (
-    <section id="team" className="py-20 bg-background">
-      <div className="max-w-site mx-auto px-4 sm:px-6 lg:px-12 xl:px-16">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-text-dark mb-4">
-          The Team
-        </h2>
-        <p className="text-center text-text-muted text-lg mb-12 max-w-2xl mx-auto">
-          Building decision support for owners, investors, and developers upgrading aging assets
-        </p>
+    <section id="team" className="bg-background py-16 sm:py-20">
+      <div className="mx-auto max-w-site px-4 sm:px-6 lg:px-12 xl:px-16">
+        {/* Row 1: Team intro | Our Mission */}
+        <div className="mb-14 grid grid-cols-1 gap-10 md:mb-16 md:grid-cols-2 md:gap-12 lg:gap-16">
+          <div className="text-left">
+            <h1 className="mb-4 text-3xl font-bold tracking-tight text-text-dark sm:text-4xl md:text-5xl">
+              The Team
+            </h1>
+            <p className="max-w-xl text-base leading-relaxed text-text-muted sm:text-lg">
+              We combine architecture, real estate development, BIM and building transformation to
+              build practical decision tools for existing buildings.
+            </p>
+          </div>
 
-        {/* Founder Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div className="text-left">
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-text-dark sm:text-4xl md:text-5xl">
+              Our Mission
+            </h2>
+            <p className="max-w-xl text-base leading-relaxed text-text-muted sm:text-lg">
+              Make renovation decisions easier to start with what is already there. Vacancy.Cloud
+              helps teams understand current performance, identify gaps and determine what needs
+              deeper investigation before major investment decisions.
+            </p>
+          </div>
+        </div>
+
+        {/* Row 2: Founders */}
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10 lg:gap-12">
           {founders.map((founder, index) => (
             <div
-              key={index}
-              className="bg-white rounded-card p-8 shadow-md hover:shadow-lg transition-shadow"
+              key={founder.name}
+              className="rounded-card bg-white p-6 shadow-md sm:p-8"
             >
-              <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-6">
-                {/* Avatar */}
+              <div className="flex flex-col items-start space-y-4 sm:flex-row sm:space-x-6 sm:space-y-0">
                 <div className="flex-shrink-0">
                   {imageErrors[index] ? (
-                    <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center border-4 border-primary/10">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-primary/10 bg-primary/10">
                       <span className="text-2xl font-bold text-primary">{founder.initials}</span>
                     </div>
                   ) : (
                     <img
                       src={founder.photo}
                       alt={`${founder.name} - ${founder.role}`}
-                      className="w-24 h-24 rounded-full object-cover border-4 border-primary/10"
+                      className="h-24 w-24 rounded-full border-4 border-primary/10 object-cover"
                       onError={() => setImageErrors((prev) => ({ ...prev, [index]: true }))}
                     />
                   )}
                 </div>
 
-                {/* Info */}
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-text-dark mb-1">{founder.name}</h3>
-                  <p className="text-accent font-semibold mb-2">{founder.role}</p>
+                  <h3 className="mb-1 text-xl font-bold text-text-dark">{founder.name}</h3>
+                  <p className="mb-2 font-semibold text-accent">{founder.role}</p>
                   {founder.title && (
-                    <p className="text-sm text-text-muted mb-3">{founder.title}</p>
+                    <p className="mb-3 text-sm text-text-muted">{founder.title}</p>
                   )}
-                  <p className="text-text-muted leading-relaxed text-sm">{founder.bio}</p>
+                  <p className="text-sm leading-relaxed text-text-muted">{founder.bio}</p>
                 </div>
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Mission Statement */}
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-card p-8 shadow-md">
-            <h3 className="text-2xl font-bold text-text-dark mb-4 text-center">Our Mission</h3>
-            <p className="text-text-muted leading-relaxed text-center">
-              Aging buildings can be upgraded rather than replaced. Vacancy.Cloud helps property owners,
-              real estate investors, developers, and asset managers evaluate energy renovation, structural
-              retention, selective dismantling, circular material reuse, and green financing — so capital
-              decisions reduce operational and embodied carbon while protecting asset value. Engineers,
-              energy auditors, demolition contractors, material recyclers, and financial institutions use
-              the same evidence base to execute and fund those pathways.
-            </p>
-          </div>
         </div>
       </div>
     </section>
@@ -90,4 +90,3 @@ const Team = () => {
 };
 
 export default Team;
-
